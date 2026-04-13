@@ -318,7 +318,7 @@ function netportscan {
 
 function nethelp {
     Write-Host "`n--- Network Command Help ---`n" -ForegroundColor Cyan
-    cat "D:\Rubber Duck\Network\AllNetworkCommand.md"
+    cat "C:\Users\Khorn Victor\.config\python\network\AllNetworkCommand.md"
 }
 
 function netdiag {
