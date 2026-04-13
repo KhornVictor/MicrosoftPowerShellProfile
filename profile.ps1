@@ -447,6 +447,18 @@ function react-help{
     cat "D:\Rubber Duck\Remember\React_Functions_Reference.md"
 }
 
+function activate-venv {
+    $venvPath = "C:\Users\Khorn Victor\ChatGPT\.venv"
+    $activateScript = Join-Path $venvPath "Scripts\Activate.ps1"
+
+    if (Test-Path $activateScript) {
+        . $activateScript
+        Write-Host "✓ Activated virtual environment at: $venvPath" -ForegroundColor Green
+    } else {
+        Write-Error "❌ Activate script not found at: $activateScript"
+    }
+}
+
 # ----------------------------
 # End of Profile
 # ----------------------------
