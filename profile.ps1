@@ -365,13 +365,13 @@ function port {
     }
 }
 
-function whatismyip {python -u "d:\Rubber Duck\Network\PublicNetwork\myIP.py"}
+function whatismyip {python -u "C:\Users\Khorn Victor\.config\python\network\myIP.py"}
 function searchIP {
     param(
         [Parameter(Mandatory = $false)]
         [string]$ipAddress
     )
-    python -u "d:\Rubber Duck\Network\PublicNetwork\searchIP.py" $ipAddress
+    python -u "C:\Users\Khorn Victor\.config\python\network\searchIP.py" $ipAddress
     
 }
 function jitter {
@@ -380,7 +380,7 @@ function jitter {
         [string]$hostname
     )
 
-    python -u "d:\Rubber Duck\Network\PublicNetwork\jitter.py" $hostname
+    python -u "C:\Users\Khorn Victor\.config\python\network\jitter.py" $hostname
 }
 
 # ----------------------------
