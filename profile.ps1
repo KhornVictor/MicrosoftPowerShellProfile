@@ -148,6 +148,7 @@ function moodle {start chrome "https://moodle.ccun.edu.kh/course/index.php?categ
 function github {start chrome "https://github.com"}
 function gmail {start chrome "https://mail.google.com"}
 function chatgpt {start chrome "https://chatgpt.com"}
+function notion {start chrome "https://www.notion.so/2efbb8d2959b45fd97ba7ae0f0535705"}
 
 function chrome {
     param([string]$url)
@@ -343,6 +344,27 @@ function netdiag {
     }
 }
 
+function port {
+    param(
+        [Parameter(Mandatory = $true)]
+        [int]$port
+    )
+    
+    $results = netstat -ano | findstr ":$port"
+
+    foreach ($line in $results) {
+        $parts = $line -split "\s+"
+        $pid = $parts[-1]
+        $process = Get-Process -Id $pid -ErrorAction SilentlyContinue
+
+        [PSCustomObject]@{
+            Port     = $port
+            PID      = $pid
+            Process  = $process.ProcessName
+        }
+    }
+}
+
 function whatismyip {python -u "d:\Rubber Duck\Network\PublicNetwork\myIP.py"}
 function searchIP {
     param(
@@ -365,28 +387,56 @@ function jitter {
 # Path
 # ----------------------------
 
-function ME{
-    set-Location "D:\ME"
+function go {
+    param([string]$name)
+
+    if ([string]::IsNullOrWhiteSpace($name)) {
+        python "C:\Users\Khorn Victor\.config\python\go.py"
+        return
+    }
+
+    $path = python "C:\Users\Khorn Victor\.config\python\go.py" $name
+    $path = ($path | Select-Object -First 1).Trim()
+
+    if ($LASTEXITCODE -eq 0 -and $path -and (Test-Path -LiteralPath $path)) {
+        Set-Location -LiteralPath $path
+    }
+    else {
+        Write-Host "❌ Invalid path name"
+    }
 }
 
-function Techno {
-    set-Location "D:\Student Online (SO)\Techno\I3-GIC-1B\Semester2"
+# ----------------------------
+# GitHub
+# ----------------------------
+
+function push_init {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$url
+    )
+
+    git init
+    git add .
+    git commit -m "first commit"
+    git branch -M main
+    git remote add origin $url
+    git push -u origin main
 }
 
-function Environnement {
-    set-Location "D:\Student Online (SO)\Code"
-}
+function push {
+    param(
+        [Parameter(Mandatory = $false)]
+        [string]$message
+    )
 
-function RubberDuck {
-    set-Location "D:\Rubber Duck"
-}
+    if ($message -eq "") {
+        $message = "Quick commit!!!"
+    }
 
-function mockexam {
-    set-Location "D:\Student Online (SO)\Mock Exam"
-}
-
-function RDTC{
-    set-Location "D:\Student Online (SO)\RDTC"
+    git add .
+    git commit -m "$message"
+    git push
 }
 
 # ----------------------------
