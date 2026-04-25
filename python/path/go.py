@@ -25,7 +25,8 @@ paths = {
     "duck": r"D:\Rubber Duck",
     "mock": r"D:\Student Online (SO)\Mock Exam",
     "rdtc": r"D:\Student Online (SO)\RDTC",
-    "config": r"C:\Users\Khorn Victor\.config"
+    "config": r"C:\Users\Khorn Victor\.config",
+    "etec": r"D:\Student Online (SO)\ETEC"
 }
 
 if len(sys.argv) < 2:

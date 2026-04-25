@@ -220,8 +220,8 @@
 # Or defined by hex code '#xxxxxx' (hex code must be within ''). User defined colors requires
 # a terminal that can change color definitions such as Gnome-terminal or rxvt.
 # default is to keep current terminal color
-; background = default
-; foreground = default
+background = '#000000'
+foreground = '#9ad0f5'
 
 # SDL and sdl_glsl only support hex code colors, these are the default:
 ; background = '#111111'
@@ -231,15 +231,15 @@
 # Gradient mode, only hex defined colors are supported,
 # background must also be defined in hex or remain commented out. 1 = on, 0 = off.
 # You can define as many as 8 different colors. They range from bottom to top of screen
-; gradient = 0
-; gradient_color_1 = '#59cc33'
-; gradient_color_2 = '#80cc33'
-; gradient_color_3 = '#a6cc33'
-; gradient_color_4 = '#cccc33'
-; gradient_color_5 = '#cca633'
-; gradient_color_6 = '#cc8033'
-; gradient_color_7 = '#cc5933'
-; gradient_color_8 = '#cc3333'
+gradient = 1
+gradient_color_1 = '#30cfd0'
+gradient_color_2 = '#3a86ff'
+gradient_color_3 = '#8ecae6'
+gradient_color_4 = '#bde0fe'
+gradient_color_5 = '#ffb703'
+gradient_color_6 = '#fb8500'
+gradient_color_7 = '#ff6b6b'
+gradient_color_8 = '#d90429'
 
 
 
