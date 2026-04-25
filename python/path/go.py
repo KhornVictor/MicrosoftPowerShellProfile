@@ -26,7 +26,7 @@ paths = {
     "mock": r"D:\Student Online (SO)\Mock Exam",
     "rdtc": r"D:\Student Online (SO)\RDTC",
     "config": r"C:\Users\Khorn Victor\.config",
-    "etec": r"D:\Student Online (SO)\ETEC"
+    "etec": r"C:\xampp\htdocs\ETEC"
 }
 
 if len(sys.argv) < 2:
