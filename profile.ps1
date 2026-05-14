@@ -1,5 +1,160 @@
 Invoke-Expression (&starship init powershell)
 
+
+oh-my-posh init pwsh --config "$env:USERPROFILE\.config\poshthemes\emodipt-extend.omp.json" | Invoke-Expression
+
+function theme {
+    param (
+        [Parameter(Mandatory = $false)]
+        [int]$Choice
+    )
+
+    # Map choices to theme files
+    $themes = @{
+        1 = "1_shell.omp.json"
+        2 = "agnoster.minimal.omp.json"
+        3 = "agnoster.omp.json"
+        4 = "agnosterplus.omp.json"
+        5 = "aliens.omp.json"
+        6 = "amro.omp.json"
+        7 = "atomic.omp.json"
+        8 = "atomicBit.omp.json"
+        9 = "avit.omp.json"
+        10 = "blue-owl.omp.json"
+        11 = "blueish.omp.json"
+        12 = "bubbles.omp.json"
+        13 = "bubblesextra.omp.json"
+        14 = "bubblesline.omp.json"
+        15 = "capr4n.omp.json"
+        16 = "catppuccin_frappe.omp.json"
+        17 = "catppuccin_latte.omp.json"
+        18 = "catppuccin_macchiato.omp.json"
+        19 = "catppuccin_mocha.omp.json"
+        20 = "catppuccin.omp.json"
+        21 = "cert.omp.json"
+        22 = "chips.omp.json"
+        23 = "cinnamon.omp.json"
+        24 = "clean-detailed.omp.json"
+        25 = "cloud-context.omp.json"
+        26 = "cloud-native-azure.omp.json"
+        27 = "cobalt2.omp.json"
+        28 = "craver.omp.json"
+        29 = "darkblood.omp.json"
+        30 = "di4am0nd.omp.json"
+        31 = "dracula.omp.json"
+        32 = "easy-term.omp.json"
+        33 = "emodipt-extend.omp.json"
+        34 = "emodipt.omp.json"
+        35 = "fish.omp.json"
+        36 = "free-ukraine.omp.json"
+        37 = "froczh.omp.json"
+        38 = "gmay.omp.json"
+        39 = "grandpa-style.omp.json"
+        40 = "gruvbox.omp.json"
+        41 = "half-life.omp.json"
+        42 = "honukai.omp.json"
+        43 = "hotstick.minimal.omp.json"
+        44 = "hul10.omp.json"
+        45 = "hunk.omp.json"
+        46 = "huvix.omp.json"
+        47 = "if_tea.omp.json"
+        48 = "illusi0n.omp.json"
+        49 = "iterm2.omp.json"
+        50 = "jandedobbeleer.omp.json"
+        51 = "jblab_2021.omp.json"
+        52 = "jonnychipz.omp.json"
+        53 = "json.omp.json"
+        54 = "jtracey93.omp.json"
+        55 = "jv_sitecorian.omp.json"
+        56 = "kali.omp.json"
+        57 = "kushal.omp.json"
+        58 = "lambda.omp.json"
+        59 = "lambdageneration.omp.json"
+        60 = "larserikfinholt.omp.json"
+        61 = "lightgreen.omp.json"
+        62 = "M365Princess.omp.json"
+        63 = "marcduiker.omp.json"
+        64 = "markbull.omp.json"
+        65 = "material.omp.json"
+        66 = "microverse-power.omp.json"
+        67 = "mojada.omp.json"
+        68 = "montys.omp.json"
+        69 = "mt.omp.json"
+        70 = "multiverse-neon.omp.json"
+        71 = "negligible.omp.json"
+        72 = "neko.omp.json"
+        73 = "night-owl.omp.json"
+        74 = "nordtron.omp.json"
+        75 = "nu4a.omp.json"
+        76 = "onehalf.minimal.omp.json"
+        77 = "paradox.omp.json"
+        78 = "pararussel.omp.json"
+        79 = "patriksvensson.omp.json"
+        80 = "peru.omp.json"
+        81 = "pixelrobots.omp.json"
+        82 = "plague.omp.json"
+        83 = "poshmon.omp.json"
+        84 = "powerlevel10k_classic.omp.json"
+        85 = "powerlevel10k_lean.omp.json"
+        86 = "powerlevel10k_modern.omp.json"
+        87 = "powerlevel10k_rainbow.omp.json"
+        88 = "powerline.omp.json"
+        89 = "probua.minimal.omp.json"
+        90 = "pure.omp.json"
+        91 = "quick-term.omp.json"
+        92 = "remk.omp.json"
+        93 = "robbyrussell.omp.json"
+        94 = "rudolfs-dark.omp.json"
+        95 = "rudolfs-light.omp.json"
+        96 = "schema.json"
+        97 = "sim-web.omp.json"
+        98 = "slim.omp.json"
+        99 = "slimfat.omp.json"
+        100 = "smoothie.omp.json"
+        101 = "sonicboom_dark.omp.json"
+        102 = "sonicboom_light.omp.json"
+        103 = "sorin.omp.json"
+        104 = "space.omp.json"
+        105 = "spaceship.omp.json"
+        106 = "star.omp.json"
+        107 = "stelbent-compact.minimal.omp.json"
+        108 = "stelbent.minimal.omp.json"
+        109 = "takuya.omp.json"
+        110 = "the-unnamed.omp.json"
+        111 = "thecyberden.omp.json"
+        112 = "tiwahu.omp.json"
+        113 = "tokyo.omp.json"
+        114 = "tokyonight_storm.omp.json"
+        115 = "tonybaloney.omp.json"
+        116 = "uew.omp.json"
+        117 = "unicorn.omp.json"
+        118 = "velvet.omp.json"
+        119 = "wholespace.omp.json"
+        120 = "wopian.omp.json"
+        121 = "xtoys.omp.json"
+        122 = "ys.omp.json"
+        123 = "zash.omp.json"
+    }
+
+    if (-not $Choice) {
+        for ($i = 1; $i -le $themes.Count; $i++) {
+            Write-Host "$i. $($themes[$i])" -ForegroundColor Green
+        }
+        Write-Host "`nPreview the themes:" -ForegroundColor Yellow -NoNewline
+        Write-Host " https://ohmyposh.dev/docs/themes`n" -ForegroundColor Cyan  
+        $Choice = Read-Host "=> "
+    }
+
+    if (-not $themes.ContainsKey($Choice)) {
+        Write-Host "Invalid choice. Please select a number between 1 and 123." -ForegroundColor Red
+        return
+    }
+
+    # Load Oh My Posh theme safely
+    oh-my-posh init pwsh --config "$env:USERPROFILE\.config\poshthemes\$($themes[$Choice])" | Invoke-Expression
+    Clear-Host
+}
+
 Write-Host "Bienvenue!" -ForegroundColor Cyan
 Write-Host "`n                     
  █████   █████  ███            █████                      
