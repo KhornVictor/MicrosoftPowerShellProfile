@@ -27,3 +27,13 @@ netsh advfirewall show allprofiles            - Displays the status of Windows F
 nbtstat                                       - Displays NetBIOS over TCP/IP statistics and remote machine information.
 getmac                                        - Shows the MAC addresses of all network adapters on the system.
 hostname                                      - Displays the hostname of the local computer.
+netinfo                                       - Display network information
+nettest                                       - ping
+netlookup                                     - DNS lookup
+netportscan                                   - Scan top 1000 ports (requires nmap)
+network                                       - Show network command help
+netdiag                                       - Run ping, traceroute, DNS lookup, and port scan
+port                                          - Show process using a given port
+whatismyip                                    - Show public IP
+searchIP                                      - Lookup IP details
+jitter                                        - Measure network jitter to a host
