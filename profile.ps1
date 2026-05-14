@@ -34,26 +34,26 @@ function nemo {
 }
 
 
-function profile (){
-	# Minimal profile: UTF‑8 + Oh My Posh (if installed) + Fastfetch with explicit config path
-	try {
-    		[Console]::InputEncoding  = [System.Text.Encoding]::UTF8
-    		[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
-    		$OutputEncoding = [System.Text.UTF8Encoding]::new($false)
-    		chcp 65001 > $null
-	} catch {}
+# function profile (){
+# 	# Minimal profile: UTF‑8 + Oh My Posh (if installed) + Fastfetch with explicit config path
+# 	try {
+#     		[Console]::InputEncoding  = [System.Text.Encoding]::UTF8
+#     		[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+#     		$OutputEncoding = [System.Text.UTF8Encoding]::new($false)
+#     		chcp 65001 > $null
+# 	} catch {}
 
 
-	Write-Host "`n"
+# 	Write-Host "`n"
 
-	# Force Fastfetch to use YOUR config every time (bypass path confusion)
-	if (Get-Command fastfetch -ErrorAction SilentlyContinue) {
-    		fastfetch -c "C:/Users/Khorn Victor/.config/fastfetch/config.jsonc"
-	}
+# 	# Force Fastfetch to use YOUR config every time (bypass path confusion)
+# 	if (Get-Command fastfetch -ErrorAction SilentlyContinue) {
+#     		fastfetch -c "C:/Users/Khorn Victor/.config/fastfetch/config.jsonc"
+# 	}
 
-}
+# }
 
-profile
+fastfetch -c "C:/Users/Khorn Victor/.config/fastfetch/config.jsonc"
 
 # ----------------------------
 # Personal information function
@@ -391,11 +391,11 @@ function go {
     param([string]$name)
 
     if ([string]::IsNullOrWhiteSpace($name)) {
-        python "C:\Users\Khorn Victor\.config\python\go.py"
+        python "C:\Users\Khorn Victor\.config\python\path\go.py"
         return
     }
 
-    $path = python "C:\Users\Khorn Victor\.config\python\go.py" $name
+    $path = python "C:\Users\Khorn Victor\.config\python\path\go.py" $name
     $path = ($path | Select-Object -First 1).Trim()
 
     if ($LASTEXITCODE -eq 0 -and $path -and (Test-Path -LiteralPath $path)) {
@@ -413,14 +413,14 @@ function go {
 function push_init {
     param(
         [Parameter(Mandatory = $true)]
-        [string]$url
+        [string]$repository
     )
 
     git init
     git add .
     git commit -m "first commit"
     git branch -M main
-    git remote add origin $url
+    git remote add origin "https://github.com/KhornVictor/$repository.git"
     git push -u origin main
 }
 
@@ -448,15 +448,50 @@ function react-help{
 }
 
 function activate-venv {
-    $venvPath = "C:\Users\Khorn Victor\ChatGPT\.venv"
-    $activateScript = Join-Path $venvPath "Scripts\Activate.ps1"
+    $activateScript = "C:\Users\Khorn Victor\.config\python\.venv\Scripts\Activate.ps1"
 
     if (Test-Path $activateScript) {
         . $activateScript
-        Write-Host "✓ Activated virtual environment at: $venvPath" -ForegroundColor Green
+        Write-Host "✓ Activated virtual environment at: ./config/python/.venv" -ForegroundColor Green
     } else {
         Write-Error "❌ Activate script not found at: $activateScript"
     }
+}
+
+# ----------------------------
+# PHP 
+# ----------------------------
+
+function init_php($name) {
+    mkdir $name
+    cd $name
+
+    mkdir app, config, routes, views, public
+    mkdir app\controllers, app\models
+    mkdir views\layout
+    mkdir public\css, public\js
+
+    New-Item index.php -ItemType File
+    New-Item config\database.php -ItemType File
+    New-Item routes\web.php -ItemType File
+    New-Item views\home.php -ItemType File
+    New-Item views\layout\header.php -ItemType File
+    New-Item views\layout\footer.php -ItemType File
+
+    clear
+
+    Write-Host "✅ PHP project '$name' created successfully!"
+}
+
+
+# ----------------------------
+# matrix
+# ----------------------------
+
+function matrix {
+    set-Location "C:\Users\Khorn Victor\.config\matrix-rain"
+    clear
+    cargo run --release -- --mode abc123
 }
 
 # ----------------------------

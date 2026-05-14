@@ -220,7 +220,7 @@
 # Or defined by hex code '#xxxxxx' (hex code must be within ''). User defined colors requires
 # a terminal that can change color definitions such as Gnome-terminal or rxvt.
 # default is to keep current terminal color
-background = '#000000'
+; background = '#000000'
 foreground = '#9ad0f5'
 
 # SDL and sdl_glsl only support hex code colors, these are the default:
