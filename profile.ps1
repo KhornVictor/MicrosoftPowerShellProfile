@@ -542,7 +542,7 @@ function jitter {
 # Path
 # ----------------------------
 
-function go {
+function direct {
     param([string]$name)
 
     if ([string]::IsNullOrWhiteSpace($name)) {
@@ -653,6 +653,12 @@ function fire {
     set-Location "C:\Users\Khorn Victor\.config\fire"
     clear
     cargo run --release
+}
+
+function radar {
+    set-Location "C:\Users\Khorn Victor\.config\radar"
+    clear
+    go run main.go
 }
 
 # ----------------------------
