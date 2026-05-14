@@ -1,5 +1,5 @@
 {
-  "$schema": "https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json",
+  "$schema": "../schema/poshthemes.json",
   "blocks": [
     {
       "alignment": "left",
@@ -161,9 +161,7 @@
         },
         {
           "foreground": "#9FD356",
-          "foreground_templates": [
-            "{{ if gt .Code 0 }}#E84855{{ end }}"
-          ],
+          "foreground_templates": ["{{ if gt .Code 0 }}#E84855{{ end }}"],
           "options": {
             "always_enabled": true
           },

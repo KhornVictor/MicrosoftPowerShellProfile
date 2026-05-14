@@ -1,5 +1,5 @@
 {
-  "$schema": "https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json",
+  "$schema": "../schema/poshthemes.json",
   "blocks": [
     {
       "alignment": "left",
@@ -109,12 +109,12 @@
       "segments": [
         {
           "options": {
-              "style": "roundrock",
-              "always_enabled": true
-            },
-            "style": "diamond",
-            "template": "{{ .FormattedMs }} ",
-            "type": "executiontime"
+            "style": "roundrock",
+            "always_enabled": true
+          },
+          "style": "diamond",
+          "template": "{{ .FormattedMs }} ",
+          "type": "executiontime"
         },
         {
           "background": "#ffffff",

@@ -1,14 +1,12 @@
 {
-  "$schema": "https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json",
+  "$schema": "../schema/poshthemes.json",
   "blocks": [
     {
       "alignment": "left",
       "segments": [
         {
           "foreground": "lightBlue",
-          "foreground_templates": [
-            "{{ if .Root }}lightRed{{ end }}"
-          ],
+          "foreground_templates": ["{{ if .Root }}lightRed{{ end }}"],
           "style": "plain",
           "template": "<{{ if .Root }}lightBlue{{ else }}green{{ end }}>\u250c\u2500\u2500(</>{{ .UserName }}{{ if .Root }}💀{{ else }}㉿{{ end }}{{ .HostName }}<{{ if .Root }}lightBlue{{ else }}green{{ end }}>)</>",
           "type": "session"
@@ -57,9 +55,7 @@
         },
         {
           "foreground": "green",
-          "foreground_templates": [
-            "{{ if gt .Code 0 }}red{{ end }}"
-          ],
+          "foreground_templates": ["{{ if gt .Code 0 }}red{{ end }}"],
           "options": {
             "always_enabled": true
           },

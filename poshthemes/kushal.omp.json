@@ -1,5 +1,5 @@
 {
-  "$schema": "https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json",
+  "$schema": "../schema/poshthemes.json",
   "console_title_template": "{{ if .Root }}root @ {{ end }}{{ .Shell }} in {{ .Folder }}",
   "blocks": [
     {
@@ -108,13 +108,9 @@
       "segments": [
         {
           "background": "#03DED3",
-          "background_templates": [
-            "{{ if gt .Code 0 }}#E44141{{ end }}"
-          ],
+          "background_templates": ["{{ if gt .Code 0 }}#E44141{{ end }}"],
           "foreground": "#414141",
-          "foreground_templates": [
-            "{{ if gt .Code 0 }}#D6DEEB{{ end }}"
-          ],
+          "foreground_templates": ["{{ if gt .Code 0 }}#D6DEEB{{ end }}"],
           "leading_diamond": "\ue0b6",
           "options": {
             "always_enabled": true

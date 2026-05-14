@@ -1,9 +1,9 @@
 {
-  "$schema": "https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json",
+  "$schema": "../schema/poshthemes.json",
   "blocks": [
     {
       "alignment": "left",
-     "segments": [
+      "segments": [
         {
           "background": "#29315A",
           "foreground": "#3EC669",
@@ -46,7 +46,7 @@
       ],
       "type": "prompt"
     },
-     {
+    {
       "alignment": "right",
       "segments": [
         {

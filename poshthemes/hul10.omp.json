@@ -1,5 +1,5 @@
 {
-  "$schema": "https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json",
+  "$schema": "../schema/poshthemes.json",
   "palette": {
     "white": "#f7f7f7",
     "black": "#111111"
@@ -111,9 +111,7 @@
         {
           "background": "transparent",
           "foreground": "#81ff91",
-          "foreground_templates": [
-            "{{if gt .Code 0}}#ff3030{{end}}"
-          ],
+          "foreground_templates": ["{{if gt .Code 0}}#ff3030{{end}}"],
           "options": {
             "always_enabled": true
           },
