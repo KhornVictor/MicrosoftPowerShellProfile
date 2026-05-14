@@ -335,3 +335,26 @@
 2026-05-14 13:00:14,930 [INFO] [MainThread] [root/api.py:69]: Fetching new weather data at 2026-05-14 13:00:14.930600
 2026-05-14 13:10:14,896 [INFO] [MainThread] [root/api.py:69]: Fetching new weather data at 2026-05-14 13:10:14.896834
 2026-05-14 13:20:14,889 [INFO] [MainThread] [root/api.py:69]: Fetching new weather data at 2026-05-14 13:20:14.889705
+2026-05-14 13:30:14,905 [INFO] [MainThread] [root/api.py:69]: Fetching new weather data at 2026-05-14 13:30:14.905466
+2026-05-14 13:40:14,887 [INFO] [MainThread] [root/api.py:69]: Fetching new weather data at 2026-05-14 13:40:14.887085
+2026-05-14 13:50:15,256 [INFO] [MainThread] [root/api.py:69]: Fetching new weather data at 2026-05-14 13:50:15.255841
+2026-05-14 13:57:05,301 [INFO] [MainThread] [root/bar_manager.py:92]: Stopping KomorebiEventListener...
+2026-05-14 13:57:05,301 [INFO] [MainThread] [root/bar_manager.py:92]: Stopping SystemEventListener...
+2026-05-14 13:57:05,303 [INFO] [MainThread] [core.utils.widgets.taskbar.window_manager/window_manager.py:218]: TaskbarWindowManager stopped
+2026-05-14 14:06:28,369 [INFO] [MainThread] [root/log.py:69]: YASB v1.8.6
+2026-05-14 14:06:28,371 [INFO] [Thread-1 (_run_server)] [cli_server/cli_server.py:212]: CLI server started v1.1.4
+2026-05-14 14:06:28,371 [INFO] [MainThread] [cli_server/cli_server.py:104]: Log pipe server started
+2026-05-14 14:06:29,395 [INFO] [MainThread] [root/api.py:60]: GitHubDataManager started...
+2026-05-14 14:06:29,415 [INFO] [MainThread] [root/service.py:48]: AudioOutputService starting...
+2026-05-14 14:06:31,529 [INFO] [MainThread] [core.utils.widgets.taskbar.window_manager/window_manager.py:191]: TaskbarWindowManager is starting...
+2026-05-14 14:06:31,532 [INFO] [MainThread] [root/bar_manager.py:85]: Starting KomorebiEventListener...
+2026-05-14 14:06:31,532 [INFO] [MainThread] [root/bar_manager.py:85]: Starting SystemEventListener...
+2026-05-14 14:06:31,532 [INFO] [MainThread] [root/watcher.py:54]: Created file watcher for path C:\Users\Khorn Victor\.config\yasb
+2026-05-14 14:06:31,555 [INFO] [Dummy-6] [root/event_listener.py:51]: Created named pipe yasb-6f727fc8-4f63-11f1-bc2d-7015fb11d23b
+2026-05-14 14:06:31,577 [INFO] [MainThread] [root/update_service.py:409]: Background update checker started
+2026-05-14 14:06:31,577 [DEBUG] [MainThread] [qasync._windows._EventPoller/_windows.py:215]: Starting (proactor: <_IocpProactor overlapped#=0 result#=0>)...
+2026-05-14 14:06:31,578 [DEBUG] [Dummy-9] [qasync._windows._EventWorker/_windows.py:195]: Thread started
+2026-05-14 14:06:31,973 [INFO] [MainThread] [root/api.py:69]: Fetching new weather data at 2026-05-14 14:06:31.973193
+2026-05-14 14:16:29,835 [INFO] [MainThread] [root/api.py:69]: Fetching new weather data at 2026-05-14 14:16:29.835442
+2026-05-14 14:26:30,004 [INFO] [MainThread] [root/api.py:69]: Fetching new weather data at 2026-05-14 14:26:30.004793
+2026-05-14 14:36:29,955 [INFO] [MainThread] [root/api.py:69]: Fetching new weather data at 2026-05-14 14:36:29.955190
