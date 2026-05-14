@@ -471,9 +471,9 @@ function netportscan {
     }
 }
 
-function nethelp {
+function network {
     Write-Host "`n--- Network Command Help ---`n" -ForegroundColor Cyan
-    cat "C:\Users\Khorn Victor\.config\python\network\AllNetworkCommand.md"
+    chrome "https://github.com/KhornVictor/NetworkCommand"
 }
 
 function netdiag {
@@ -647,6 +647,12 @@ function matrix {
     set-Location "C:\Users\Khorn Victor\.config\matrix-rain"
     clear
     cargo run --release -- --mode abc123
+}
+
+function fire {
+    set-Location "C:\Users\Khorn Victor\.config\fire"
+    clear
+    cargo run --release
 }
 
 # ----------------------------
