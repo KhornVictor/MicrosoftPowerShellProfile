@@ -1,7 +1,7 @@
 Invoke-Expression (&starship init powershell)
 
 
-oh-my-posh init pwsh --config "$env:USERPROFILE\.config\poshthemes\emodipt-extend.omp.json" | Invoke-Expression
+oh-my-posh init pwsh --config "$env:USERPROFILE\.config\poshthemes\1_shell.omp.json" | Invoke-Expression
 
 function theme {
     param (
@@ -316,7 +316,7 @@ function youtube {
         [string[]]$query
     )
 
-    if (-not $query) {=
+    if (-not $query) {
         start chrome "https://www.youtube.com"
         return
     }
