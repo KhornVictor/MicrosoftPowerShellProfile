@@ -1,7 +1,23 @@
 Invoke-Expression (&starship init powershell)
 
 
-oh-my-posh init pwsh --config "$env:USERPROFILE\.config\poshthemes\1_shell.omp.json" | Invoke-Expression
+function Init-RandomOhMyPosh {
+    $themesPath = "$env:USERPROFILE\.config\poshthemes"
+
+    $themes = Get-ChildItem -Path $themesPath -Filter "*.omp.json" |
+        Where-Object { $_.Name -ne "schema.json" }
+
+    if (-not $themes) {
+        Write-Host "No themes found in $themesPath" -ForegroundColor Red
+        return
+    }
+
+    $randomTheme = Get-Random -InputObject $themes
+    oh-my-posh init pwsh --config $randomTheme.FullName | Invoke-Expression
+    Write-Host "Loaded random theme: $($randomTheme.Name)" -ForegroundColor Cyan
+}
+
+Init-RandomOhMyPosh
 
 function theme {
     param (
@@ -644,19 +660,19 @@ function init_php($name) {
 # ----------------------------
 
 function matrix {
-    set-Location "C:\Users\Khorn Victor\.config\matrix-rain"
+    set-Location "C:\Users\Khorn Victor\.config\Matrix-Rain"
     clear
     cargo run --release -- --mode abc123
 }
 
 function fire {
-    set-Location "C:\Users\Khorn Victor\.config\fire"
+    set-Location "C:\Users\Khorn Victor\.config\Fire-Shell"
     clear
     cargo run --release
 }
 
 function radar {
-    set-Location "C:\Users\Khorn Victor\.config\radar"
+    set-Location "C:\Users\Khorn Victor\.config\Radar-Shell"
     clear
     go run main.go
 }
