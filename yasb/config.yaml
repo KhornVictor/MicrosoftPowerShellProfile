@@ -1,0 +1,417 @@
+watch_stylesheet: true
+watch_config: true
+debug: false
+komorebi:
+  start_command: "komorebic start --whkd"
+  stop_command: "komorebic stop --whkd"
+  reload_command: "komorebic stop --whkd && komorebic start --whkd"
+bars:
+  primary-bar:
+    enabled: true
+    screens: ["*"]
+    class_name: "yasb-bar"
+    alignment:
+      position: "top"
+      center: false
+    blur_effect:
+      enabled: true
+      acrylic: false
+      dark_mode: true
+      round_corners: true
+      border_color: None
+    window_flags:
+      always_on_top: false
+      windows_app_bar: true
+    dimensions:
+      width: "100%"
+      height: 32
+    padding:
+      top: 4
+      left: 6
+      bottom: 4
+      right: 6
+    widgets:
+      left: ["home", "komorebi_workspaces", "active_window"]
+      center: ["clock", "apps"]
+      right:
+        [
+          "cava",
+          "media",
+          "github",
+          "volume",
+          "weather",
+          "taskbar",
+          "language",
+          # "update",
+          "wallpapers",
+          "power_menu",
+        ]
+widgets:
+  home:
+    type: "yasb.home.HomeWidget"
+    options:
+      label: "<span>\udb81\udf17</span>"
+      menu_list:
+        - { title: "User Home", path: "~" }
+        - { title: "Download", path: "~\\Downloads" }
+        - { title: "Documents", path: "~\\Documents" }
+        - { title: "Pictures", path: "~\\Pictures" }
+      system_menu: true
+      power_menu: true
+      blur: false
+  update:
+    type: "yasb.update_check.UpdateCheckWidget"
+    options:
+      winget_update:
+        enabled: true
+        label: "<span>\uf0ab</span>{count}"
+        interval: 30
+        exclude: []
+      windows_update:
+        enabled: true
+        label: "<span>\uf0ab</span>{count}"
+        interval: 240
+        exclude: []
+  active_window:
+    type: "yasb.active_window.ActiveWindowWidget"
+    options:
+      label: "{win[title]}"
+      label_alt: "[class_name='{win[class_name]}' exe='{win[process][name]}' hwnd={win[hwnd]}]"
+      label_no_window: ""
+      label_icon: true
+      label_icon_size: 14
+      max_length: 56
+      max_length_ellipsis: "..."
+      monitor_exclusive: false
+  clock:
+    type: "yasb.clock.ClockWidget"
+    options:
+      label: "{%a, %d %b %H:%M}"
+      label_alt: "{%A, %d %B %Y %H:%M:%S}"
+      timezones: []
+      calendar:
+        alignment: "center"
+        offset_top: 6
+  komorebi_workspaces:
+    type: "komorebi.workspaces.WorkspaceWidget"
+    options:
+      label_offline: "\u23fc Offline"
+      label_workspace_btn: "\udb81\udc3d"
+      label_workspace_active_btn: ""
+      label_workspace_populated_btn: "\udb81\udc3e"
+      label_default_name: "{index}"
+      label_zero_index: false
+      hide_empty_workspaces: false
+      hide_if_offline: true
+      animation: true
+  komorebi_active_layout:
+    type: "komorebi.active_layout.ActiveLayoutWidget"
+    options:
+      hide_if_offline: true
+      label: "{icon}"
+      layouts:
+        [
+          "bsp",
+          "columns",
+          "rows",
+          "grid",
+          "vertical_stack",
+          "horizontal_stack",
+          "ultrawide_vertical_stack",
+          "right_main_vertical_stack",
+        ]
+      layout_icons:
+        bsp: "BSP"
+        columns: "COLS"
+        rows: "ROWS"
+        grid: "GRID"
+        vertical_stack: "V-STACK"
+        horizontal_stack: "H-STACK"
+        ultrawide_vertical_stack: "W-STACK"
+        right_main_vertical_stack: "RMV-STACK"
+        monocle: "MONOCLE"
+        maximised: "MAX"
+        floating: "FLOATING"
+        paused: "PAUSED"
+      callbacks:
+        on_left: "next_layout"
+        on_middle: "toggle_monocle"
+        on_right: "prev_layout"
+  weather:
+    type: "yasb.weather.WeatherWidget"
+    options:
+      label: "<span>{icon}</span> {temp}"
+      label_alt: "{location}: Min {min_temp}, Max {max_temp}, Humidity {humidity}"
+      api_key: "3bf4cf9a7c3f40d6b31174128242807" # Get your free API key from https://www.weatherapi.com/
+      show_alerts: true
+      tooltip: true
+      update_interval: 600 # Update interval in seconds, Min 600 seconds
+      hide_decimal: true
+      units: "metric" # Can be 'metric' or 'imperial'
+      location: "Phnom Penh, Cambodia"
+      callbacks:
+        on_left: "toggle_card"
+        on_middle: "do_nothing"
+        on_right: "toggle_label"
+      icons:
+        sunnyDay: "\ue30d"
+        clearNight: "\ue32b"
+        cloudyDay: "\ue312"
+        cloudyNight: "\ue311"
+        rainyDay: "\ue308"
+        rainyNight: "\ue333"
+        snowyDay: "\ue30a"
+        snowyNight: "\ue335"
+        blizzardDay: "\udb83\udf36"
+        blizzardNight: "\udb83\udf36"
+        foggyDay: "\ue303"
+        foggyNight: "\ue346"
+        thunderstormDay: "\ue30f"
+        thunderstormNight: "\ue338"
+        default: "\uebaa"
+      weather_card:
+        blur: true
+        round_corners: true
+        round_corners_type: "normal"
+        border_color: "system"
+        alignment: "right"
+        direction: "down"
+        icon_size: 64
+        show_hourly_forecast: true # Set to False to disable hourly forecast
+        time_format: "24h" # can be 12h or 24h
+        hourly_point_spacing: 76
+        hourly_icon_size: 32 # better to set 16, 32 or 64 for better quality
+        icon_smoothing: true # should be true for smoother icon or false for sharper icon if using 16, 32 or 64 for hourly_icon_size
+        temp_line_width: 2 # can be 0 to hide the temperature line
+        current_line_color: "#8EAEE8"
+        current_line_width: 1 # can be 0 to hide the current hour line
+        current_line_style: "dot"
+        hourly_gradient:
+          enabled: false
+          top_color: "#8EAEE8"
+          bottom_color: "#2A3E68"
+        hourly_forecast_buttons: # Optional hourly forecast data type toggle buttons, default disabled
+          enabled: true # Set to false to hide the buttons
+          default_view: "temperature" # Default view when opening the weather card. Options: "temperature", "rain", "snow"
+          temperature_icon: "\udb81\udd99"
+          rain_icon: "\udb81\udd96"
+          snow_icon: "\udb81\udd98"
+        weather_animation:
+          enabled: false
+          snow_overrides_rain: true
+          temp_line_animation_style: both # can be "rain", "snow", "both", or "none"
+          rain_effect_intensity: 1.0 # 0.01 - 10.0
+          snow_effect_intensity: 1.0 # 0.01 - 10.0
+          scale_with_chance: true
+          enable_debug: false
+      label_shadow:
+        enabled: true
+        color: "black"
+        radius: 3
+        offset: [1, 1]
+  volume:
+    type: "yasb.volume.VolumeWidget"
+    options:
+      label: "<span>{icon}</span> {level}"
+      label_alt: "{volume}"
+      volume_icons:
+        - "\ueee8"
+        - "\uf026"
+        - "\uf027"
+        - "\uf027"
+        - "\uf028"
+      callbacks:
+        on_right: "exec cmd.exe /c start ms-settings:sound"
+  power_menu:
+    type: "yasb.power_menu.PowerMenuWidget"
+    options:
+      label: "\uf011"
+      uptime: True
+      blur: False
+      blur_background: True
+      animation_duration: 200
+      button_row: 5
+      buttons:
+        shutdown: ["\uf011", "Shut Down"]
+        restart: ["\uead2", "Restart"]
+        signout: ["\udb80\udf43", "Sign out"]
+        hibernate: ["\uf28e", "Hibernate"]
+        sleep: ["\u23fe", "Sleep"]
+        cancel: ["", "Cancel"]
+  apps:
+    type: "yasb.applications.ApplicationsWidget"
+    options:
+      label: "{data}"
+      app_list:
+        - { icon: "\uf0a2", launch: "notification_center" }
+        - { icon: "\uf422", launch: "launcher" }
+        - { icon: "\ueb03", launch: "cmd /c Taskmgr" }
+        - { icon: "\uf489", launch: "wt" }
+        - {
+            icon: "\uf1ff",
+            launch: "C:\\Users\\Khorn Victor\\AppData\\Local\\Discord\\Update.exe --processStart Discord.exe",
+          }
+        - {
+            icon: "\ue217",
+            launch: "C:\\Users\\Khorn Victor\\AppData\\Roaming\\Telegram Desktop\\Telegram.exe",
+          }
+        - {
+            icon: "\ued38",
+            launch: "C:\\Users\\Khorn Victor\\AppData\\Local\\Viber\\Viber.exe",
+          }
+        - {
+            icon: "\udb82\ude1e",
+            launch: "C:\\Users\\Khorn Victor\\AppData\\Local\\Programs\\Microsoft VS Code\\Code.exe",
+          }
+  github:
+    type: "yasb.github.GithubWidget"
+    options:
+      label: "<span>\ueba1</span>"
+      label_alt: "Notifications {data}"
+      token: env
+      max_notification: 30
+      only_unread: false
+      max_field_size: 54
+      update_interval: 60
+  taskbar:
+    type: "yasb.taskbar.TaskbarWidget"
+    options:
+      animation:
+        enabled: true
+      icon_size: 16
+      ignore_apps:
+        processes: []
+        titles: []
+        classes: []
+  wallpapers:
+    type: "yasb.wallpapers.WallpapersWidget"
+    options:
+      label: "<span>\udb83\ude09</span>"
+      # Example path to folder with images. Can be a single string or a list of strings.
+      # image_path: "C:\\Users\\{Username}\\Images"
+      image_path:
+        - "D:\\Photo\\Wallpaper"
+      change_automatically: false # Automatically change wallpaper
+      update_interval: 60 # If change_automatically is true, update interval in seconds
+      gallery:
+        enabled: true
+        blur: true
+        image_width: 220
+        image_per_page: 5
+        gallery_columns: 0 # 0 = auto, matches image_per_page for a single row
+        horizontal_position: "center" # left/center/right placement on screen
+        vertical_position: "center" # top/center/bottom placement
+        position_offset: 0 # minimum gap (px) from screen edges - see below for advanced options
+        respect_work_area: true # clamp to OS work area (avoids Windows taskbar)
+        show_buttons: false
+        orientation: "portrait"
+        image_spacing: 8
+        lazy_load: true
+        lazy_load_fadein: 400
+        image_corner_radius: 12
+      run_after: # List of functions to run after wallpaper is updated
+        - "wal -s -t -e -q -n -i {image}" # Example command to run after wallpaper is updated
+        - "cmd.exe /c start /min pwsh ./yasb.ps1" # Example command to run after wallpaper is updated
+      label_shadow:
+        enabled: true
+        color: "black"
+        radius: 3
+        offset: [1, 1]
+      callbacks:
+        on_left: "toggle_gallery"
+        on_middle: "do_nothing"
+        on_right: "change_wallpaper"
+  language:
+    type: "yasb.language.LanguageWidget"
+    options:
+      label: "{lang[language_code]}-{lang[country_code]}"
+      label_alt: "{lang[full_name]}"
+      update_interval: 5
+      callbacks:
+        on_left: "toggle_menu"
+        on_middle: "do_nothing"
+        on_right: "toggle_label"
+      language_menu:
+        blur: true
+        round_corners: true
+        round_corners_type: "normal"
+        border_color: "system"
+        alignment: "right"
+        direction: "down"
+        offset_top: 6
+        offset_left: 0
+        show_layout_icon: true
+        layout_icon: "\uf11c"
+      label_shadow:
+        enabled: true
+        color: "black"
+        radius: 3
+        offset: [1, 1]
+  cava:
+    type: "yasb.cava.CavaWidget"
+    options:
+      bar_height: 12
+      min_bar_height: 0
+      gradient: 1
+      foreground: "#89b4fa"
+      gradient_color_1: "#74c7ec"
+      gradient_color_2: "#89b4fa"
+      gradient_color_3: "#cba6f7"
+      bars_number: 8
+      bar_spacing: 2
+      bar_width: 4
+      bar_type: "bars"
+      framerate: 60
+      hide_empty: false
+  media:
+    type: "yasb.media.MediaWidget"
+    options:
+      label: "{title} - {artist}"
+      label_alt: "{title}"
+      hide_empty: true
+      callbacks:
+        on_left: "toggle_media_menu"
+        on_middle: "toggle_play_pause"
+        on_right: "toggle_label"
+      max_field_size:
+        label: 16
+        label_alt: 16
+      show_thumbnail: true
+      controls_only: false
+      controls_left: false
+      controls_hide: true
+      thumbnail_edge_fade: true
+      thumbnail_padding: 32
+      scrolling_label:
+        enabled: true
+        update_interval_ms: 50
+        style: "left"
+        separator: " "
+        label_padding: 2
+        ease_slope: 20
+        ease_pos: 0.8
+        ease_min: 0.5
+      icons:
+        prev_track: "\ue892"
+        next_track: "\ue893"
+        play: "\ue768"
+        pause: "\ue769"
+      media_menu:
+        blur: true
+        round_corners: true
+        round_corners_type: "normal"
+        border_color: "None"
+        alignment: "right"
+        direction: "down"
+        offset_top: 6
+        offset_left: 0
+        thumbnail_corner_radius: 4
+        thumbnail_size: 80
+        max_title_size: 60
+        max_artist_size: 20
+        show_source: true
+      media_menu_icons:
+        play: "\ue768"
+        pause: "\ue769"
+        prev_track: "\ue892"
+        next_track: "\ue893"
