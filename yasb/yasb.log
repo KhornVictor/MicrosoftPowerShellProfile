@@ -527,3 +527,29 @@
 2026-05-22 18:09:31,403 [DEBUG] [MainThread] [qasync._windows._EventPoller/_windows.py:220]: Stopping worker thread...
 2026-05-22 18:09:31,416 [DEBUG] [Dummy-9] [qasync._windows._EventWorker/_windows.py:204]: Exiting thread
 2026-05-22 18:09:31,418 [DEBUG] [MainThread] [qasync._windows._IocpProactor/_windows.py:78]: Closing
+2026-05-25 13:29:04,822 [INFO] [MainThread] [root/log.py:69]: YASB v1.8.6
+2026-05-25 13:29:04,823 [INFO] [Thread-1 (_run_server)] [cli_server/cli_server.py:212]: CLI server started v1.1.4
+2026-05-25 13:29:04,823 [INFO] [MainThread] [cli_server/cli_server.py:104]: Log pipe server started
+2026-05-25 13:29:05,640 [INFO] [MainThread] [root/api.py:60]: GitHubDataManager started...
+2026-05-25 13:29:05,662 [INFO] [MainThread] [root/service.py:48]: AudioOutputService starting...
+2026-05-25 13:29:06,013 [INFO] [MainThread] [core.utils.widgets.taskbar.window_manager/window_manager.py:191]: TaskbarWindowManager is starting...
+2026-05-25 13:29:06,020 [INFO] [MainThread] [root/bar_manager.py:85]: Starting SystemEventListener...
+2026-05-25 13:29:06,020 [INFO] [MainThread] [root/bar_manager.py:85]: Starting KomorebiEventListener...
+2026-05-25 13:29:06,020 [INFO] [MainThread] [root/watcher.py:54]: Created file watcher for path C:\Users\Khorn Victor\.config\yasb
+2026-05-25 13:29:06,051 [INFO] [Dummy-6] [root/event_listener.py:51]: Created named pipe yasb-078fce82-5803-11f1-82df-7015fb11d23e
+2026-05-25 13:29:06,076 [INFO] [MainThread] [root/update_service.py:409]: Background update checker started
+2026-05-25 13:29:06,077 [DEBUG] [MainThread] [qasync._windows._EventPoller/_windows.py:215]: Starting (proactor: <_IocpProactor overlapped#=0 result#=0>)...
+2026-05-25 13:29:06,078 [DEBUG] [Dummy-7] [qasync._windows._EventWorker/_windows.py:195]: Thread started
+2026-05-25 13:29:06,896 [INFO] [MainThread] [root/api.py:69]: Fetching new weather data at 2026-05-25 13:29:06.896895
+2026-05-25 13:39:06,188 [INFO] [MainThread] [root/api.py:69]: Fetching new weather data at 2026-05-25 13:39:06.188664
+2026-05-25 13:49:06,159 [INFO] [MainThread] [root/api.py:69]: Fetching new weather data at 2026-05-25 13:49:06.159630
+2026-05-25 13:59:06,160 [INFO] [MainThread] [root/api.py:69]: Fetching new weather data at 2026-05-25 13:59:06.160385
+2026-05-25 14:09:06,262 [INFO] [MainThread] [root/api.py:69]: Fetching new weather data at 2026-05-25 14:09:06.262915
+2026-05-25 14:19:07,017 [INFO] [MainThread] [root/api.py:69]: Fetching new weather data at 2026-05-25 14:19:07.017391
+2026-05-25 14:29:06,242 [INFO] [MainThread] [root/api.py:69]: Fetching new weather data at 2026-05-25 14:29:06.242385
+2026-05-25 14:39:06,500 [INFO] [MainThread] [root/api.py:69]: Fetching new weather data at 2026-05-25 14:39:06.500214
+2026-05-25 14:49:06,337 [INFO] [MainThread] [root/api.py:69]: Fetching new weather data at 2026-05-25 14:49:06.337533
+2026-05-25 14:59:06,389 [INFO] [MainThread] [root/api.py:69]: Fetching new weather data at 2026-05-25 14:59:06.389883
+2026-05-25 15:03:43,858 [INFO] [MainThread] [root/bar_manager.py:92]: Stopping SystemEventListener...
+2026-05-25 15:03:43,862 [INFO] [MainThread] [root/bar_manager.py:92]: Stopping KomorebiEventListener...
+2026-05-25 15:03:43,874 [INFO] [MainThread] [core.utils.widgets.taskbar.window_manager/window_manager.py:218]: TaskbarWindowManager stopped
