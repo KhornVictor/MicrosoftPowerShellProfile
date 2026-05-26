@@ -27,7 +27,7 @@ paths = {
     "rdtc": r"C:\Desktop\Student Online (SO)\RDTC\aero-service",
     "config": r"C:\Users\Khorn Victor\.config",
     "etec": r"C:\xampp\htdocs\ETEC",
-    "camcycber": r"C:\Desktop\Student Online (SO)\Camcyber",
+    "camcycber": r"C:\Desktop\Student Online (SO)\Camcycber",
 }
 
 if len(sys.argv) < 2:
