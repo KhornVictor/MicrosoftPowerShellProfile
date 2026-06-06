@@ -20,7 +20,7 @@ def color(text, style):
 
 paths = {
     "me": r"C:\Users\Khorn Victor\ME",
-    "techno": r"C:\Desktop\Student Online (SO)\Techno\I3-GIC-1B\Semester2",
+    "techno": r"C:\Desktop\Student Online (SO)\Techno\I3-GIC-A\Semester2",
     "env": r"C:\Desktop\Student Online (SO)\Code",
     "duck": r"C:\Desktop\Rubber Duck",
     "mock": r"C:\Desktop\Student Online (SO)\Mock Exam",
