@@ -1,5 +1,6 @@
 Invoke-Expression (&starship init powershell)
 
+
 function Init-RandomOhMyPosh {
     $themesPath = "$env:USERPROFILE\.config\poshthemes"
 
@@ -223,7 +224,7 @@ function nemo {
 
 # }
 
-fastfetch -c "C:/Users/Khorn Victor/.config/fastfetch/config.jsonc"
+# fastfetch -c "C:/Users/Khorn Victor/.config/fastfetch/config.jsonc"
 
 # ----------------------------
 # Personal information function
@@ -674,6 +675,10 @@ function radar {
     set-Location "C:\Users\Khorn Victor\.config\Radar-Shell"
     clear
     go run main.go
+}
+
+function randomCode {
+    node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"
 }
 
 # ----------------------------
