@@ -1,6 +1,5 @@
 Invoke-Expression (&starship init powershell)
 
-
 function Init-RandomOhMyPosh {
     $themesPath = "$env:USERPROFILE\.config\poshthemes"
 

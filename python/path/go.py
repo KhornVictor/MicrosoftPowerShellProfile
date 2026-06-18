@@ -28,6 +28,7 @@ paths = {
     "config": r"C:\Users\Khorn Victor\.config",
     "etec": r"C:\xampp\htdocs\ETEC",
     "camcycber": r"C:\Desktop\Student Online (SO)\Camcycber",
+    "autohotkey": r"C:\Users\Khorn Victor\OneDrive\Documents\AutoHotkey"
 }
 
 if len(sys.argv) < 2:
