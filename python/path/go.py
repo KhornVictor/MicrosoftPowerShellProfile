@@ -28,7 +28,7 @@ paths = {
     "config": r"C:\Users\Khorn Victor\.config",
     "etec": r"C:\xampp\htdocs\ETEC",
     "camcycber": r"C:\Desktop\Student Online (SO)\Camcycber",
-    "STJ": r"C:\Desktop\Student Online (SO)\Techno\other\STJ",
+    "stj": r"C:\Desktop\Student Online (SO)\Techno\other\STJ",
     "autohotkey": r"C:\Users\Khorn Victor\OneDrive\Documents\AutoHotkey"
 }
 
