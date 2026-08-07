@@ -595,6 +595,20 @@ function push_init {
     git push -u origin main
 }
 
+function push_init_rdtc {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$repository
+    )
+
+    git init
+    git add .
+    git commit -m "first commit"
+    git branch -M main
+    git remote add origin "https://github.com/RDTC-AeroService/$repository.git"
+    git push -u origin main
+}
+
 function push {
     param(
         [Parameter(Mandatory = $false)]
@@ -679,6 +693,78 @@ function radar {
 
 function randomCode {
     node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"
+}
+
+# ----------------------------
+# End of Profile
+# ----------------------------
+
+function nest-run {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$ProjectPath
+    )
+
+    if (!(Test-Path $ProjectPath)) {
+        Write-Host "Directory not found: $ProjectPath"
+        return
+    }
+
+    Push-Location $ProjectPath
+    try {
+        npm run start:dev
+    }
+    finally {
+        Pop-Location
+    }
+}
+
+function next-run {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$ProjectPath
+    )
+
+    if (!(Test-Path $ProjectPath)) {
+        Write-Host "Directory not found: $ProjectPath"
+        return
+    }
+
+    Push-Location $ProjectPath
+    try {
+        npm run dev
+    }
+    finally {
+        Pop-Location
+    }
+}
+
+function node-run {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$ProjectPath
+    )
+
+    if (!(Test-Path $ProjectPath)) {
+        Write-Host "Directory not found: $ProjectPath"
+        return
+    }
+
+    Push-Location $ProjectPath
+    try {
+        node server.js
+    }
+    finally {
+        Pop-Location
+    }
+}
+
+# ----------------------------
+# KeyBind
+# ----------------------------
+
+Set-PSReadLineKeyHandler -Chord Ctrl+t -ScriptBlock {
+    [Microsoft.PowerShell.PSConsoleReadLine]::Insert("Copy-Item ")
 }
 
 # ----------------------------
