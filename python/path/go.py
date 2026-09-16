@@ -29,7 +29,9 @@ paths = {
     "etec": r"C:\xampp\htdocs\ETEC",
     "camcycber": r"C:\Desktop\Student Online (SO)\Camcycber",
     "stj": r"C:\Desktop\Student Online (SO)\Techno\other\STJ",
-    "autohotkey": r"C:\Users\Khorn Victor\OneDrive\Documents\AutoHotkey"
+    "autohotkey": r"C:\Users\Khorn Victor\OneDrive\Documents\AutoHotkey",
+    "obsidean": r"C:\Desktop\Obsidean",
+    "drive": r"C:\Desktop\Drive"
 }
 
 if len(sys.argv) < 2:
