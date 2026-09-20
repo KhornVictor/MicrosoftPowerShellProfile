@@ -1,5 +1,23 @@
 Invoke-Expression (&starship init powershell)
 
+# Configure fzf appearance to match the screenshot
+$env:FZF_DEFAULT_OPTS = @"
+--height=12
+--layout=reverse
+--prompt='> '
+--pointer='>'
+--marker='>'
+--no-separator
+--no-scrollbar
+--color='bg+:-1,fg+:cyan:bold,hl:yellow:bold,hl+:yellow:bold'
+--color='prompt:yellow:bold,pointer:yellow:bold,info:yellow'
+"@
+
+# Bind history search
+Import-Module PSFzf
+Set-PSReadLineOption -PredictionSource History
+Set-PSReadLineOption -PredictionViewStyle ListView
+Set-PSReadLineOption -EditMode Windows
 
 function Init-RandomOhMyPosh {
     $themesPath = "$env:USERPROFILE\.config\poshthemes"
@@ -157,7 +175,7 @@ function theme {
             Write-Host "$i. $($themes[$i])" -ForegroundColor Green
         }
         Write-Host "`nPreview the themes:" -ForegroundColor Yellow -NoNewline
-        Write-Host " https://ohmyposh.dev/docs/themes`n" -ForegroundColor Cyan  
+        Write-Host " https://ohmyposh.dev/docs/themes`n" -ForegroundColor Cyan  x
         $Choice = Read-Host "=> "
     }
 
@@ -170,18 +188,210 @@ function theme {
     oh-my-posh init pwsh --config "$env:USERPROFILE\.config\poshthemes\$($themes[$Choice])" | Invoke-Expression
     Clear-Host
 }
+function initialize {
+    # Set UTF-8 Output Encoding
+    [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 
-Write-Host "Bienvenue!" -ForegroundColor Cyan
-Write-Host "`n                     
- █████   █████  ███            █████                      
-░░███   ░░███  ░░░            ░░███                       
- ░███    ░███  ████   ██████  ███████    ██████  ████████ 
- ░███    ░███ ░░███  ███░░███░░░███░    ███░░███░░███░░███
- ░░███   ███   ░███ ░███ ░░░   ░███    ░███ ░███ ░███ ░░░ 
-  ░░░█████░    ░███ ░███  ███  ░███ ███░███ ░███ ░███     
-    ░░███      █████░░██████   ░░█████ ░░██████  █████    
-     ░░░      ░░░░░  ░░░░░░     ░░░░░   ░░░░░░  ░░░░░                                                                                                                                                               
-" -ForegroundColor Green
+    $esc = [char]27
+
+    # Color Definitions
+    $cReset     = "$esc[0m"
+    $cPsVer     = "$esc[38;2;135;215;0m"        # Lime Green
+    $cOrigGreen = "$esc[38;2;135;215;0m"        # Original Green for Name ASCII
+    $cCyan      = "$esc[38;2;80;210;210m"       # Cyan
+    $cHey       = "$esc[38;2;220;220;220m"      # Off White
+    $cName      = "$esc[38;2;135;215;0m"        # Lime Green
+    $cBoxBorder = "$esc[38;2;90;110;100m"       # Muted Slate
+    $cBoxTitle  = "$esc[38;2;135;215;0m"        # Lime Green
+    $cLabel     = "$esc[38;2;135;215;0m"        # Lime Green
+
+    # Highlight Colors for Values
+    $cVal       = "$esc[1;97m"                  # Bold Bright White
+    $cHighlight = "$esc[38;2;80;220;255m"       # Bright Electric Cyan Highlight
+    $cPct       = "$esc[38;2;255;215;0m"        # Gold / Amber Highlight for %
+    $cSub       = "$esc[38;2;140;150;160m"      # Muted Gray for separators
+
+    $cBracket   = "$esc[38;2;90;90;90m"        # Dark Slate
+    $cBarFill   = "$esc[38;2;135;215;0m"        # Lime Green
+    $cBarEmpty  = "$esc[38;2;60;60;60m"        # Muted Gray
+    $cGreet     = "$esc[38;2;230;130;50m"       # Warm Orange
+
+    # Box & Progress Symbols
+    $topLeft  = [string][char]0x256D # ╭
+    $topRight = [string][char]0x256E # ╮
+    $botLeft  = [string][char]0x2570 # ╰
+    $botRight = [string][char]0x256F # ╯
+    $horiz    = [string][char]0x2500 # ─
+    $vert     = [string][char]0x2502 # │
+    $fullBar  = [string][char]0x2588 # █
+    $emptyBar = [string][char]0x2591 # ░
+    $dot      = [string][char]0x25CF # ●
+
+    # Progress Bar Generator
+    function Get-BarStr ([int]$pct, [int]$len = 10) {
+        $fCount = [math]::Round(($pct / 100) * $len)
+        if ($fCount -gt $len) { $fCount = $len }
+        if ($fCount -lt 0) { $fCount = 0 }
+        $eCount = $len - $fCount
+        $fStr = $fullBar * $fCount
+        $eStr = $emptyBar * $eCount
+        return "$cBracket[$cBarFill$fStr$cBarEmpty$eStr$cBracket]$cReset"
+    }
+
+    # Box Construction Helpers
+    function Make-TopBox ([string]$title, [int]$width = 65) {
+        $prefix = "$topLeft$horiz$horiz "
+        $titleLen = $title.Length
+        $fillLen = $width - 5 - $titleLen
+        if ($fillLen -lt 1) { $fillLen = 1 }
+        $fill = $horiz * $fillLen
+        return "$cBoxBorder$prefix$cBoxTitle$title $cBoxBorder$fill$topRight$cReset"
+    }
+
+    function Make-BotBox ([int]$width = 65) {
+        $fill = $horiz * ($width - 2)
+        return "$cBoxBorder$botLeft$fill$botRight$cReset"
+    }
+
+    # --- System Information Retrieval ---
+    $psVersionStr = "PowerShell " + $PSVersionTable.PSVersion.ToString()
+
+    # CPU
+    try {
+        $cpuObj = Get-CimInstance Win32_Processor | Select-Object -First 1
+        $cNameRaw = $cpuObj.Name -replace '\(R\)','' -replace '\(TM\)','' -replace 'CPU @.*','' -replace '\s+',' '
+        $cNameRaw = $cNameRaw.Trim()
+        $cpuStr = "$cVal$cNameRaw $cSub($cHighlight$($cpuObj.NumberOfCores)C$cSub / $cHighlight$($cpuObj.NumberOfLogicalProcessors)T$cSub) @ $cHighlight$([math]::Round($cpuObj.MaxClockSpeed / 1000, 2)) GHz$cReset"
+    } catch {
+        $cpuStr = "$cVal Intel Core i9-14900HX $cSub($cHighlight 24C / 32T$cSub) @ $cHighlight 2.20 GHz$cReset"
+    }
+
+    # GPU
+    try {
+        $gpus = Get-CimInstance Win32_VideoController
+        $gpuObj = $gpus | Where-Object { $_.Name -match 'NVIDIA|AMD|Radeon|GeForce|RTX|GTX' } | Select-Object -First 1
+        if (-not $gpuObj) { $gpuObj = $gpus | Select-Object -First 1 }
+        $gNameRaw = $gpuObj.Name -replace '\(R\)','' -replace '\(TM\)','' -replace '\s+',' '
+        $gNameRaw = $gNameRaw.Trim()
+        
+        $vramStr = ""
+        if ($gpuObj.AdapterRAM -and $gpuObj.AdapterRAM -gt 0) {
+            $vGiB = [math]::Round([uint64]$gpuObj.AdapterRAM / 1GB, 2)
+            if ($vGiB -gt 0 -and $vGiB -lt 100) {
+                $vramStr = " $cSub//$cVal ${vGiB} GiB"
+            }
+        }
+        $gpuStr = "$cVal$gNameRaw"
+    } catch {
+        $gpuStr = "$cVal NVIDIA GeForce RTX 4070 Laptop GPU"
+    }
+
+    # RAM
+    try {
+        $osObj = Get-CimInstance Win32_OperatingSystem
+        $ramTotal = [math]::Round($osObj.TotalVisibleMemorySize / 1MB, 2)
+        $ramFree  = [math]::Round($osObj.FreePhysicalMemory / 1MB, 2)
+        $ramUsed  = [math]::Round($ramTotal - $ramFree, 2)
+        $ramPct   = [math]::Round(($ramUsed / $ramTotal) * 100)
+    } catch {
+        $ramUsed = 22.60; $ramTotal = 63.62; $ramPct = 36
+    }
+
+    # SWAP
+    try {
+        $pfObj = Get-CimInstance Win32_PageFileUsage -ErrorAction SilentlyContinue | Select-Object -First 1
+        if ($pfObj -and $pfObj.AllocatedBaseSize -gt 0) {
+            $swapTotal = [math]::Round($pfObj.AllocatedBaseSize / 1024, 2)
+            $swapUsed  = [math]::Round($pfObj.CurrentUsage / 1024, 2)
+            $swapPct   = [math]::Round(($swapUsed / $swapTotal) * 100)
+        } else {
+            $swapTotal = [math]::Round(($osObj.TotalVirtualMemorySize / 1MB) - $ramTotal, 2)
+            $swapFree  = [math]::Round(($osObj.FreeVirtualMemory / 1MB) - $ramFree, 2)
+            if ($swapTotal -lt 0) { $swapTotal = 0 }
+            if ($swapFree -lt 0)  { $swapFree = 0 }
+            $swapUsed  = [math]::Round($swapTotal - $swapFree, 2)
+            $swapPct   = if ($swapTotal -gt 0) { [math]::Round(($swapUsed / $swapTotal) * 100) } else { 0 }
+        }
+    } catch {
+        $swapUsed = 0.03; $swapTotal = 4.00; $swapPct = 1
+    }
+
+    # Drives
+    $driveList = @()
+    try {
+        $disks = Get-CimInstance Win32_LogicalDisk -Filter "DriveType=3"
+        foreach ($d in $disks) {
+            $t = [math]::Round($d.Size / 1GB, 2)
+            $f = [math]::Round($d.FreeSpace / 1GB, 2)
+            $u = [math]::Round($t - $f, 2)
+            $p = [math]::Round(($u / $t) * 100)
+            $driveList += [PSCustomObject]@{
+                Letter = $d.DeviceID + "\"
+                Used   = $u
+                Total  = $t
+                Pct    = $p
+            }
+        }
+    } catch {}
+
+    # Session / Uptime / Date
+    $username = if ($env:USERNAME) { $env:USERNAME } else { "Victor" }
+    $bootTime = $osObj.LastBootUpTime
+    $loginStr = "$cHighlight$username $cSub//$cVal " + $bootTime.ToString("yyyy-MM-dd HH:mm:ss") + "$cReset"
+
+    $now = Get-Date
+    $upSpan = $now - $bootTime
+    if ($upSpan.Days -gt 0) {
+        $uptimeStr = "$cHighlight$($upSpan.Days)$cVal days, $cHighlight$($upSpan.Hours)$cVal hours, $cHighlight$($upSpan.Minutes)$cVal mins$cReset"
+    } else {
+        $uptimeStr = "$cHighlight$($upSpan.Hours)$cVal hours, $cHighlight$($upSpan.Minutes)$cVal mins$cReset"
+    }
+    $dateStr = "$cHighlight" + $now.ToString("yyyy-MM-dd HH:mm:ss") + "$cReset"
+
+    # --- TOP SECTION ---
+    Write-Host "$cPsVer$psVersionStr$cReset"
+    Write-Host ""
+    Write-Host "$cCyan`Bienvenue!$cReset"
+    Write-Host ""
+    Write-Host "$cOrigGreen █████   █████  ███            █████                      $cReset"
+    Write-Host "$cOrigGreen░░███   ░░███  ░░░            ░░███                       $cReset"
+    Write-Host "$cOrigGreen ░███    ░███  ████   ██████  ███████    ██████  ████████ $cReset"
+    Write-Host "$cOrigGreen ░███    ░███ ░░███  ███░░███░░░███░    ███░░███░░███░░███$cReset"
+    Write-Host "$cOrigGreen ░░███   ███   ░███ ░███ ░░░   ░███    ░███ ░███ ░███ ░░░ $cReset"
+    Write-Host "$cOrigGreen  ░░░█████░    ░███ ░███  ███  ░███ ███░███ ░███ ░███     $cReset"
+    Write-Host "$cOrigGreen    ░░███      █████░░██████   ░░█████ ░░██████  █████    $cReset"
+    Write-Host "$cOrigGreen     ░░░      ░░░░░  ░░░░░░     ░░░░░   ░░░░░░  ░░░░░     $cReset"
+    Write-Host ""
+
+    # --- BOTTOM SECTION: Fetch System Info Dashboard ---
+    $boxWidth = 65
+
+    Write-Host ""
+    Write-Host (Make-TopBox "Hardware" $boxWidth)
+    Write-Host "$cBoxBorder$vert  $cLabel`CPU      $cpuStr"
+    Write-Host "$cBoxBorder$vert  $cLabel`GPU      $gpuStr"
+    Write-Host "$cBoxBorder$vert  $cLabel`RAM      $cVal$ramUsed GiB $cSub/$cVal $ramTotal GiB"
+    Write-Host "$cBoxBorder$vert  $cLabel`SWAP     $cVal$swapUsed GiB $cSub/$cVal $swapTotal GiB"
+
+    foreach ($dr in $driveList) {
+        Write-Host "$cBoxBorder$vert  $cLabel`DRIVE    $cHighlight$($dr.Letter) $cVal$($dr.Used) GiB $cSub/$cVal $($dr.Total) GiB"
+    }
+    Write-Host (Make-BotBox $boxWidth)
+    Write-Host ""
+
+
+    # Color Palette Dots
+    $dWhite = "$esc[38;2;220;220;220m"
+    $dCyan  = "$esc[38;2;80;210;210m"
+    $dPink  = "$esc[38;2;230;100;230m"
+    $dBlue  = "$esc[38;2;80;120;240m"
+    $dYell  = "$esc[38;2;240;210;80m"
+    $dGreen = "$esc[38;2;120;220;100m"
+    $dRed   = "$esc[38;2;240;80;80m"
+    $dots   = "$dWhite$dot $dCyan$dot $dPink$dot $dBlue$dot $dYell$dot $dGreen$dot $dRed$dot$cReset"
+    Write-Host $dots
+}
+
 
 function nemo {
     param (
@@ -205,26 +415,26 @@ function nemo {
 }
 
 
-# function profile (){
-# 	# Minimal profile: UTF‑8 + Oh My Posh (if installed) + Fastfetch with explicit config path
-# 	try {
-#     		[Console]::InputEncoding  = [System.Text.Encoding]::UTF8
-#     		[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
-#     		$OutputEncoding = [System.Text.UTF8Encoding]::new($false)
-#     		chcp 65001 > $null
-# 	} catch {}
+function profile (){
+	# Minimal profile: UTF‑8 + Oh My Posh (if installed) + Fastfetch with explicit config path
+	try {
+    		[Console]::InputEncoding  = [System.Text.Encoding]::UTF8
+    		[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+    		$OutputEncoding = [System.Text.UTF8Encoding]::new($false)
+    		chcp 65001 > $null
+	} catch {}
 
 
-# 	Write-Host "`n"
+	Write-Host "`n"
 
-# 	# Force Fastfetch to use YOUR config every time (bypass path confusion)
-# 	if (Get-Command fastfetch -ErrorAction SilentlyContinue) {
-#     		fastfetch -c "C:/Users/Khorn Victor/.config/fastfetch/config.jsonc"
-# 	}
+	# Force Fastfetch to use YOUR config every time (bypass path confusion)
+	if (Get-Command fastfetch -ErrorAction SilentlyContinue) {
+    		fastfetch -c "C:/Users/Khorn Victor/.config/fastfetch/config.jsonc"
+	}
 
-# }
+}
 
-# fastfetch -c "C:/Users/Khorn Victor/.config/fastfetch/config.jsonc"
+fastfetch -c "C:/Users/Khorn Victor/.config/fastfetch/config.jsonc"
 
 # ----------------------------
 # Personal information function
@@ -694,6 +904,27 @@ function radar {
 function randomCode {
     node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"
 }
+
+
+# ----------------------------
+# Terminal Customization
+# ----------------------------
+function Change() {
+    try {
+        Push-Location "C:\Desktop\Student Online (SO)\Code\TerminalOsConfiguration"
+        cargo run
+    } catch { Write-Host "❌ Failed to change terminal configuration. Ensure the path is correct and Cargo is installed." -ForegroundColor Red }
+    finally { Pop-Location }
+}
+
+function clock() {
+     try {
+        Push-Location "C:\Desktop\Student Online (SO)\Code\TerminalClock"
+        cargo run
+    } catch { Write-Host "❌ Failed to change terminal configuration. Ensure the path is correct and Cargo is installed." -ForegroundColor Red }
+    finally { Pop-Location }
+}
+
 
 # ----------------------------
 # End of Profile
