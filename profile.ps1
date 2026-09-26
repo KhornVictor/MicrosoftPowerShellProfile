@@ -19,7 +19,7 @@ Set-PSReadLineOption -PredictionSource History
 Set-PSReadLineOption -PredictionViewStyle ListView
 Set-PSReadLineOption -EditMode Windows
 
-function Init-RandomOhMyPosh {
+function Init_RandomOhMyPosh {
     $themesPath = "$env:USERPROFILE\.config\poshthemes"
 
     $themes = Get-ChildItem -Path $themesPath -Filter "*.omp.json" |
@@ -35,7 +35,7 @@ function Init-RandomOhMyPosh {
     Write-Host "Loaded random theme: $($randomTheme.Name)" -ForegroundColor Cyan
 }
 
-Init-RandomOhMyPosh
+Init_RandomOhMyPosh
 
 function theme {
     param (
@@ -199,8 +199,6 @@ function initialize {
     $cPsVer     = "$esc[38;2;135;215;0m"        # Lime Green
     $cOrigGreen = "$esc[38;2;135;215;0m"        # Original Green for Name ASCII
     $cCyan      = "$esc[38;2;80;210;210m"       # Cyan
-    $cHey       = "$esc[38;2;220;220;220m"      # Off White
-    $cName      = "$esc[38;2;135;215;0m"        # Lime Green
     $cBoxBorder = "$esc[38;2;90;110;100m"       # Muted Slate
     $cBoxTitle  = "$esc[38;2;135;215;0m"        # Lime Green
     $cLabel     = "$esc[38;2;135;215;0m"        # Lime Green
@@ -208,13 +206,11 @@ function initialize {
     # Highlight Colors for Values
     $cVal       = "$esc[1;97m"                  # Bold Bright White
     $cHighlight = "$esc[38;2;80;220;255m"       # Bright Electric Cyan Highlight
-    $cPct       = "$esc[38;2;255;215;0m"        # Gold / Amber Highlight for %
     $cSub       = "$esc[38;2;140;150;160m"      # Muted Gray for separators
 
     $cBracket   = "$esc[38;2;90;90;90m"        # Dark Slate
     $cBarFill   = "$esc[38;2;135;215;0m"        # Lime Green
     $cBarEmpty  = "$esc[38;2;60;60;60m"        # Muted Gray
-    $cGreet     = "$esc[38;2;230;130;50m"       # Warm Orange
 
     # Box & Progress Symbols
     $topLeft  = [string][char]0x256D # ╭
@@ -239,7 +235,7 @@ function initialize {
     }
 
     # Box Construction Helpers
-    function Make-TopBox ([string]$title, [int]$width = 65) {
+    function MakeTopBox ([string]$title, [int]$width = 65) {
         $prefix = "$topLeft$horiz$horiz "
         $titleLen = $title.Length
         $fillLen = $width - 5 - $titleLen
@@ -248,7 +244,7 @@ function initialize {
         return "$cBoxBorder$prefix$cBoxTitle$title $cBoxBorder$fill$topRight$cReset"
     }
 
-    function Make-BotBox ([int]$width = 65) {
+    function MakeBotBox ([int]$width = 65) {
         $fill = $horiz * ($width - 2)
         return "$cBoxBorder$botLeft$fill$botRight$cReset"
     }
@@ -273,14 +269,6 @@ function initialize {
         if (-not $gpuObj) { $gpuObj = $gpus | Select-Object -First 1 }
         $gNameRaw = $gpuObj.Name -replace '\(R\)','' -replace '\(TM\)','' -replace '\s+',' '
         $gNameRaw = $gNameRaw.Trim()
-        
-        $vramStr = ""
-        if ($gpuObj.AdapterRAM -and $gpuObj.AdapterRAM -gt 0) {
-            $vGiB = [math]::Round([uint64]$gpuObj.AdapterRAM / 1GB, 2)
-            if ($vGiB -gt 0 -and $vGiB -lt 100) {
-                $vramStr = " $cSub//$cVal ${vGiB} GiB"
-            }
-        }
         $gpuStr = "$cVal$gNameRaw"
     } catch {
         $gpuStr = "$cVal NVIDIA GeForce RTX 4070 Laptop GPU"
@@ -292,9 +280,8 @@ function initialize {
         $ramTotal = [math]::Round($osObj.TotalVisibleMemorySize / 1MB, 2)
         $ramFree  = [math]::Round($osObj.FreePhysicalMemory / 1MB, 2)
         $ramUsed  = [math]::Round($ramTotal - $ramFree, 2)
-        $ramPct   = [math]::Round(($ramUsed / $ramTotal) * 100)
     } catch {
-        $ramUsed = 22.60; $ramTotal = 63.62; $ramPct = 36
+        $ramUsed = 22.60; $ramTotal = 63.62;
     }
 
     # SWAP
@@ -303,17 +290,15 @@ function initialize {
         if ($pfObj -and $pfObj.AllocatedBaseSize -gt 0) {
             $swapTotal = [math]::Round($pfObj.AllocatedBaseSize / 1024, 2)
             $swapUsed  = [math]::Round($pfObj.CurrentUsage / 1024, 2)
-            $swapPct   = [math]::Round(($swapUsed / $swapTotal) * 100)
         } else {
             $swapTotal = [math]::Round(($osObj.TotalVirtualMemorySize / 1MB) - $ramTotal, 2)
             $swapFree  = [math]::Round(($osObj.FreeVirtualMemory / 1MB) - $ramFree, 2)
             if ($swapTotal -lt 0) { $swapTotal = 0 }
             if ($swapFree -lt 0)  { $swapFree = 0 }
             $swapUsed  = [math]::Round($swapTotal - $swapFree, 2)
-            $swapPct   = if ($swapTotal -gt 0) { [math]::Round(($swapUsed / $swapTotal) * 100) } else { 0 }
         }
     } catch {
-        $swapUsed = 0.03; $swapTotal = 4.00; $swapPct = 1
+        $swapUsed = 0.03; $swapTotal = 4.00;
     }
 
     # Drives
@@ -336,24 +321,13 @@ function initialize {
 
     # Session / Uptime / Date
     $username = if ($env:USERNAME) { $env:USERNAME } else { "Victor" }
-    $bootTime = $osObj.LastBootUpTime
-    $loginStr = "$cHighlight$username $cSub//$cVal " + $bootTime.ToString("yyyy-MM-dd HH:mm:ss") + "$cReset"
-
-    $now = Get-Date
-    $upSpan = $now - $bootTime
-    if ($upSpan.Days -gt 0) {
-        $uptimeStr = "$cHighlight$($upSpan.Days)$cVal days, $cHighlight$($upSpan.Hours)$cVal hours, $cHighlight$($upSpan.Minutes)$cVal mins$cReset"
-    } else {
-        $uptimeStr = "$cHighlight$($upSpan.Hours)$cVal hours, $cHighlight$($upSpan.Minutes)$cVal mins$cReset"
-    }
-    $dateStr = "$cHighlight" + $now.ToString("yyyy-MM-dd HH:mm:ss") + "$cReset"
 
     # --- TOP SECTION ---
     Write-Host "$cPsVer$psVersionStr$cReset"
     Write-Host ""
     Write-Host "$cCyan`Bienvenue!$cReset"
     Write-Host ""
-    Write-Host "$cOrigGreen █████   █████  ███            █████                      $cReset"
+    Write-Host "$cOrigGreen█████   █████  ███            █████                      $cReset"
     Write-Host "$cOrigGreen░░███   ░░███  ░░░            ░░███                       $cReset"
     Write-Host "$cOrigGreen ░███    ░███  ████   ██████  ███████    ██████  ████████ $cReset"
     Write-Host "$cOrigGreen ░███    ░███ ░░███  ███░░███░░░███░    ███░░███░░███░░███$cReset"
@@ -515,63 +489,91 @@ function web {
     Write-Host "✅ Opening: $url" -ForegroundColor Green
 }
 
-function search {
+
+
+function moodle {Start-Process chrome "https://moodle.ccun.edu.kh/course/index.php?categoryid=45"}
+function gitlab {Start-Process chrome "https://gitlab.com"}
+function gmail {Start-Process chrome "https://mail.google.com"}
+function chatgpt {Start-Process chrome "https://chatgpt.com"}
+function notion {Start-Process chrome "https://www.notion.so/2efbb8d2959b45fd97ba7ae0f0535705"}
+
+function github {
     param(
-        [Parameter(ValueFromRemainingArguments = $true)]
-        [string[]]$query
+        [Alias("u")]
+        [string]$Username,
+
+        [Alias("t")]
+        [string]$Tab,
+
+        [Alias("r")]
+        [string]$Repository
     )
+    if (-not $Username -and -not $Repository -and -not $Tab) {
+        if ($LASTEXITCODE -eq 0) {
+            $RemoteUrl = git config --get remote.origin.url
+            if ($RemoteUrl) {
+                if ($RemoteUrl -match "^git@github\.com:(.+?)/(.+?)(\.git)?$") {
+                    $Username = $Matches[1]
+                    $Repository = $Matches[2] -replace "\.git$", ""
+                } elseif ($RemoteUrl -match "^https://github\.com/(.+?)/(.+?)(\.git)?$") {
+                    $Username = $Matches[1]
+                    $Repository = $Matches[2] -replace "\.git$", ""
+                }
 
-    $search = [System.Web.HttpUtility]::UrlEncode($query -join " ")
-    start chrome "https://www.google.com/search?q=$search"
-}
-
-function moodle {start chrome "https://moodle.ccun.edu.kh/course/index.php?categoryid=45"}
-function github {start chrome "https://github.com"}
-function gmail {start chrome "https://mail.google.com"}
-function chatgpt {start chrome "https://chatgpt.com"}
-function notion {start chrome "https://www.notion.so/2efbb8d2959b45fd97ba7ae0f0535705"}
-
-function chrome {
-    param([string]$url)
-    start chrome $url
+                if ($Username -and $Repository) {
+                    $Url = "https://github.com/$Username/$Repository"
+                    Write-Host "Git repository found:" -ForegroundColor Green
+                    Write-Host $Url
+                    Start-Process "chrome" $Url
+                    return
+                }
+            }
+        }
+        Start-Process "chrome" "https://github.com/KhornVictor"
+        return
+    }
+    if (-not $Username) {
+        $Username = "KhornVictor"
+    }
+    $Url = "https://github.com/$Username"
+    if ($Repository) { $Url += "/$Repository" }
+    if ($Tab) { $Url += "/$Tab" }
+    Start-Process "chrome" $Url
 }
 
 function youtube {
     param(
-        [Parameter(ValueFromRemainingArguments = $true)]
-        [string[]]$query
+        [Alias("s")]
+        [string]$Search
     )
 
-    if (-not $query) {
-        start chrome "https://www.youtube.com"
+    if ($Search) {
+        $encodedSearch = [System.Web.HttpUtility]::UrlEncode($Search)
+        Start-Process chrome "https://www.youtube.com/results?search_query=$encodedSearch"
         return
     }
+
+    Start-Process chrome "https://www.youtube.com"
+}
+
+function chrome {
+    param(
+        [Alias("u")]
+        [string]$URL,
+
+        [Alias("t")]
+        [string]$Search
+    )
     
-    $search = [System.Web.HttpUtility]::UrlEncode($query -join " ")
-    start chrome "https://www.youtube.com/results?search_query=$search"
+    if ($URL) {
+        Start-Process chrome $URL
+    } elseif ($Search) {
+        $encodedSearch = [System.Web.HttpUtility]::UrlEncode($Search)
+        Start-Process chrome "https://www.google.com/search?q=$encodedSearch"
+    } else {
+        Start-Process chrome
+    }
 }
-
-
-function firefox {
-    param([string]$url)
-    start firefox $url
-}
-
-function edge {
-    param([string]$url)
-    start msedge $url
-}
-
-# ----------------------------
-# Clean ChatGPT function
-# ----------------------------
-
-function Start-GPT4All {
-
-    python -u "C:\Users\Khorn Victor\ChatGPT\chat_local.py"
-
-}
-
 
 # ----------------------------
 # Open PDF
@@ -607,44 +609,10 @@ function openpdf {
 
     # Open with the chosen app
     switch ($with) {
-        "acrobat" { start "" "C:\Program Files\Adobe\Acrobat DC\Acrobat\Acrobat.exe" $fileUrl }
-        "edge"    { start msedge $fileUrl }
-        "chrome"  { start chrome $fileUrl }
-        "firefox" { start firefox $fileUrl }
-    }
-}
-
-# ----------------------------
-# Telegram Bot functions
-# ----------------------------
-
-function chatting {
-    [CmdletBinding()]
-    param(
-        [switch]$UseVenv  # Activate .venv if available
-    )
-
-    $project = "D:\Tool\HackerTool\Telegram_Bot_Prank"
-    Push-Location $project
-    try {
-        if ($UseVenv -and (Test-Path ".\.venv\Scripts\Activate.ps1")) {
-            . .\.venv\Scripts\Activate.ps1
-            Write-Host "✓ Activated .venv" -ForegroundColor Green
-        }
-
-        if (-not (Get-Command python -ErrorAction SilentlyContinue)) {
-            Write-Error "Python not found in PATH. Install Python or add it to PATH."
-            return
-        }
-
-        if (-not (Test-Path ".env")) {
-            Write-Host "⚠️  .env not found — ensure TELEGRAM_BOT_TOKEN is configured." -ForegroundColor Yellow
-        }
-
-        python ".\main.py"
-    }
-    finally {
-        Pop-Location
+        "acrobat" { Start-Process "" "C:\Program Files\Adobe\Acrobat DC\Acrobat\Acrobat.exe" $fileUrl }
+        "edge"    { Start-Process msedge $fileUrl }
+        "chrome"  { Start-Process chrome $fileUrl }
+        "firefox" { Start-Process firefox $fileUrl }
     }
 }
 
@@ -735,12 +703,12 @@ function port {
 
     foreach ($line in $results) {
         $parts = $line -split "\s+"
-        $pid = $parts[-1]
+        $poid = $parts[-1]
         $process = Get-Process -Id $pid -ErrorAction SilentlyContinue
 
         [PSCustomObject]@{
             Port     = $port
-            PID      = $pid
+            PID      = $poid
             Process  = $process.ProcessName
         }
     }
@@ -838,11 +806,11 @@ function push {
 # References
 # ----------------------------
 
-function react-help{
-    cat "D:\Rubber Duck\Remember\React_Functions_Reference.md"
+function reactref {
+    Get-Content "D:\Rubber Duck\Remember\React_Functions_Reference.md"
 }
 
-function activate-venv {
+function activate_venv {
     $activateScript = "C:\Users\Khorn Victor\.config\python\.venv\Scripts\Activate.ps1"
 
     if (Test-Path $activateScript) {
@@ -859,7 +827,7 @@ function activate-venv {
 
 function init_php($name) {
     mkdir $name
-    cd $name
+    Set-Location $name
 
     mkdir app, config, routes, views, public
     mkdir app\controllers, app\models
@@ -873,7 +841,7 @@ function init_php($name) {
     New-Item views\layout\header.php -ItemType File
     New-Item views\layout\footer.php -ItemType File
 
-    clear
+    Clear-Host
 
     Write-Host "✅ PHP project '$name' created successfully!"
 }
@@ -885,19 +853,19 @@ function init_php($name) {
 
 function matrix {
     set-Location "C:\Users\Khorn Victor\.config\Matrix-Rain"
-    clear
+    Clear-Host
     cargo run --release -- --mode abc123
 }
 
 function fire {
     set-Location "C:\Users\Khorn Victor\.config\Fire-Shell"
-    clear
+    Clear-Host
     cargo run --release
 }
 
 function radar {
     set-Location "C:\Users\Khorn Victor\.config\Radar-Shell"
-    clear
+    Clear-Host
     go run main.go
 }
 
@@ -925,12 +893,22 @@ function clock() {
     finally { Pop-Location }
 }
 
+function terminal {
+    if ($args.Count -eq 0) {
+        wt.exe -d "$PWD"
+    }
+    else {
+        wt.exe -d "$($args[0])"
+    }
+}
+
+function env(){ Start-Process "SystemPropertiesAdvanced.exe"}
 
 # ----------------------------
 # End of Profile
 # ----------------------------
 
-function nest-run {
+function runNest {
     param(
         [Parameter(Mandatory = $true)]
         [string]$ProjectPath
@@ -950,7 +928,7 @@ function nest-run {
     }
 }
 
-function next-run {
+function runNext {
     param(
         [Parameter(Mandatory = $true)]
         [string]$ProjectPath
@@ -970,7 +948,7 @@ function next-run {
     }
 }
 
-function node-run {
+function runNode {
     param(
         [Parameter(Mandatory = $true)]
         [string]$ProjectPath
@@ -998,6 +976,10 @@ Set-PSReadLineKeyHandler -Chord Ctrl+t -ScriptBlock {
     [Microsoft.PowerShell.PSConsoleReadLine]::Insert("Copy-Item ")
 }
 
+
+function c {Clear-Host}
+function vs {code .}
+function q {exit}
 # ----------------------------
 # End of Profile
 # ----------------------------
