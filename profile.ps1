@@ -836,7 +836,7 @@ function push {
     if (-not $Force) {
         Write-Host "Changes staged/unstaged:" -ForegroundColor Cyan
         git status --short
-        $confirm = Read-Host "`nProceed with git add ., commit, and push? (Y/n)"
+        $confirm = Read-Host "`nProceed with git add ., commit, and push? default is Y (Y/n)"
         $confirm = if ([string]::IsNullOrWhiteSpace($confirm)) { "y" } else { $confirm }
         if ($confirm -notmatch '^(y|yes)$') {
             Write-Host "❌ Push aborted." -ForegroundColor Red
