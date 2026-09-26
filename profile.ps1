@@ -1,5 +1,3 @@
-Invoke-Expression (&starship init powershell)
-
 # Configure fzf appearance to match the screenshot
 $env:FZF_DEFAULT_OPTS = @"
 --height=12
@@ -14,10 +12,12 @@ $env:FZF_DEFAULT_OPTS = @"
 "@
 
 # Bind history search
-Import-Module PSFzf
-Set-PSReadLineOption -PredictionSource History
-Set-PSReadLineOption -PredictionViewStyle ListView
-Set-PSReadLineOption -EditMode Windows
+Import-Module PSFzf -ErrorAction SilentlyContinue
+try {
+    Set-PSReadLineOption -PredictionSource History -ErrorAction SilentlyContinue
+    Set-PSReadLineOption -PredictionViewStyle ListView -ErrorAction SilentlyContinue
+    Set-PSReadLineOption -EditMode Windows -ErrorAction SilentlyContinue
+} catch {}
 
 function Init_RandomOhMyPosh {
     $themesPath = "$env:USERPROFILE\.config\poshthemes"
@@ -175,7 +175,7 @@ function theme {
             Write-Host "$i. $($themes[$i])" -ForegroundColor Green
         }
         Write-Host "`nPreview the themes:" -ForegroundColor Yellow -NoNewline
-        Write-Host " https://ohmyposh.dev/docs/themes`n" -ForegroundColor Cyan  x
+        Write-Host " https://ohmyposh.dev/docs/themes`n" -ForegroundColor Cyan
         $Choice = Read-Host "=> "
     }
 
@@ -235,7 +235,7 @@ function initialize {
     }
 
     # Box Construction Helpers
-    function MakeTopBox ([string]$title, [int]$width = 65) {
+    function Make-TopBox ([string]$title, [int]$width = 65) {
         $prefix = "$topLeft$horiz$horiz "
         $titleLen = $title.Length
         $fillLen = $width - 5 - $titleLen
@@ -244,7 +244,7 @@ function initialize {
         return "$cBoxBorder$prefix$cBoxTitle$title $cBoxBorder$fill$topRight$cReset"
     }
 
-    function MakeBotBox ([int]$width = 65) {
+    function Make-BotBox ([int]$width = 65) {
         $fill = $horiz * ($width - 2)
         return "$cBoxBorder$botLeft$fill$botRight$cReset"
     }
@@ -320,7 +320,7 @@ function initialize {
     } catch {}
 
     # Session / Uptime / Date
-    $username = if ($env:USERNAME) { $env:USERNAME } else { "Victor" }
+    $username = if ($env:USERNAME) { $env:USERNAME } else { "User" }
 
     # --- TOP SECTION ---
     Write-Host "$cPsVer$psVersionStr$cReset"
@@ -403,19 +403,21 @@ function profile (){
 
 	# Force Fastfetch to use YOUR config every time (bypass path confusion)
 	if (Get-Command fastfetch -ErrorAction SilentlyContinue) {
-    		fastfetch -c "C:/Users/Khorn Victor/.config/fastfetch/config.jsonc"
+		fastfetch -c "$HOME/.config/fastfetch/config.jsonc"
 	}
 
 }
 
-fastfetch -c "C:/Users/Khorn Victor/.config/fastfetch/config.jsonc"
+if (Get-Command fastfetch -ErrorAction SilentlyContinue) {
+    fastfetch -c "$HOME/.config/fastfetch/config.jsonc"
+}
 
 # ----------------------------
 # Personal information function
 # ----------------------------
 
 # Show my information
-function me {Write-Host " `nBonjour, Je suis Victor. 🧔‍♂️`nJ'étudie en un intitute de technologie.🧑‍🏫`nJe viens de la France. 🌍`nJ'habite à Paris. 🗼`nEncanté!`n"}	
+function me {Write-Host " `nBonjour, Je suis Victor. 🧔‍♂️`nDeveloper & Tech Enthusiast.`n"}	
 
 # copy path
 function cpwd {
@@ -491,11 +493,17 @@ function web {
 
 
 
-function moodle {Start-Process chrome "https://moodle.ccun.edu.kh/course/index.php?categoryid=45"}
-function gitlab {Start-Process chrome "https://gitlab.com"}
-function gmail {Start-Process chrome "https://mail.google.com"}
-function chatgpt {Start-Process chrome "https://chatgpt.com"}
-function notion {Start-Process chrome "https://www.notion.so/2efbb8d2959b45fd97ba7ae0f0535705"}
+function moodle {
+    $url = if ($env:MOODLE_URL) { $env:MOODLE_URL } else { "https://moodle.org" }
+    Start-Process $url
+}
+function gitlab {Start-Process "https://gitlab.com"}
+function gmail {Start-Process "https://mail.google.com"}
+function chatgpt {Start-Process "https://chatgpt.com"}
+function notion {
+    $url = if ($env:NOTION_URL) { $env:NOTION_URL } else { "https://www.notion.so" }
+    Start-Process $url
+}
 
 function github {
     param(
@@ -524,12 +532,12 @@ function github {
                     $Url = "https://github.com/$Username/$Repository"
                     Write-Host "Git repository found:" -ForegroundColor Green
                     Write-Host $Url
-                    Start-Process "chrome" $Url
+                    Start-Process $Url
                     return
                 }
             }
         }
-        Start-Process "chrome" "https://github.com/KhornVictor"
+        Start-Process "https://github.com/KhornVictor"
         return
     }
     if (-not $Username) {
@@ -538,7 +546,7 @@ function github {
     $Url = "https://github.com/$Username"
     if ($Repository) { $Url += "/$Repository" }
     if ($Tab) { $Url += "/$Tab" }
-    Start-Process "chrome" $Url
+    Start-Process $Url
 }
 
 function youtube {
@@ -549,11 +557,11 @@ function youtube {
 
     if ($Search) {
         $encodedSearch = [System.Web.HttpUtility]::UrlEncode($Search)
-        Start-Process chrome "https://www.youtube.com/results?search_query=$encodedSearch"
+        Start-Process "https://www.youtube.com/results?search_query=$encodedSearch"
         return
     }
 
-    Start-Process chrome "https://www.youtube.com"
+    Start-Process "https://www.youtube.com"
 }
 
 function chrome {
@@ -566,10 +574,10 @@ function chrome {
     )
     
     if ($URL) {
-        Start-Process chrome $URL
+        Start-Process $URL
     } elseif ($Search) {
         $encodedSearch = [System.Web.HttpUtility]::UrlEncode($Search)
-        Start-Process chrome "https://www.google.com/search?q=$encodedSearch"
+        Start-Process "https://www.google.com/search?q=$encodedSearch"
     } else {
         Start-Process chrome
     }
@@ -583,15 +591,18 @@ function openpdf {
         [Parameter(Mandatory = $true)]
         [string]$file,
 
-        [ValidateSet("acrobat", "edge", "chrome", "firefox")]
-        [string]$with = "edge"
+        [Parameter(Mandatory = $false)]
+        [string]$folder,
+
+        [ValidateSet("acrobat", "edge", "chrome", "firefox", "default")]
+        [string]$with = "default"
     )
 
-    # Base folder (local path)
-    $BASE_FOLDER = "D:\Student Online (SO)\Techno\I3-GIC-1B\Semester1\Object-Oriented Program\Lesson"
+    # Base folder (override with $env:LESSONS_PATH or parameter)
+    $BASE_FOLDER = if ($folder) { $folder } elseif ($env:LESSONS_PATH) { $env:LESSONS_PATH } else { "$HOME\Documents\Lessons" }
 
     # Full path
-    $fullPath = Join-Path $BASE_FOLDER $file
+    $fullPath = if ([System.IO.Path]::IsPathRooted($file)) { $file } else { Join-Path $BASE_FOLDER $file }
 
     # Add .pdf automatically if missing
     if (-not $fullPath.ToLower().EndsWith(".pdf")) {
@@ -607,12 +618,13 @@ function openpdf {
     # Convert local path to file:/// URL with %20 for spaces
     $fileUrl = "file:///" + ($fullPath -replace '\\', '/') -replace ' ', '%20'
 
-    # Open with the chosen app
+    # Open with chosen or default viewer
     switch ($with) {
         "acrobat" { Start-Process "" "C:\Program Files\Adobe\Acrobat DC\Acrobat\Acrobat.exe" $fileUrl }
         "edge"    { Start-Process msedge $fileUrl }
         "chrome"  { Start-Process chrome $fileUrl }
         "firefox" { Start-Process firefox $fileUrl }
+        default   { Start-Process $fileUrl }
     }
 }
 
@@ -667,7 +679,7 @@ function netportscan {
 
 function network {
     Write-Host "`n--- Network Command Help ---`n" -ForegroundColor Cyan
-    chrome "https://github.com/KhornVictor/NetworkCommand"
+    Start-Process "https://github.com/KhornVictor/NetworkCommand"
 }
 
 function netdiag {
@@ -699,28 +711,34 @@ function port {
         [int]$port
     )
     
-    $results = netstat -ano | findstr ":$port"
+    $results = netstat -ano | Select-String ":$port\b"
 
-    foreach ($line in $results) {
-        $parts = $line -split "\s+"
-        $poid = $parts[-1]
-        $process = Get-Process -Id $pid -ErrorAction SilentlyContinue
+    foreach ($match in $results) {
+        $parts = $match.Line.Trim() -split "\s+"
+        if ($parts.Count -ge 5) {
+            $poid = $parts[-1]
+            $procName = "Unknown"
+            $proc = Get-Process -Id $poid -ErrorAction SilentlyContinue
+            if ($proc) {
+                $procName = $proc.ProcessName
+            }
 
-        [PSCustomObject]@{
-            Port     = $port
-            PID      = $poid
-            Process  = $process.ProcessName
+            [PSCustomObject]@{
+                Port    = $port
+                PID     = $poid
+                Process = $procName
+            }
         }
     }
 }
 
-function whatismyip {python -u "C:\Users\Khorn Victor\.config\python\network\myIP.py"}
+function whatismyip {python -u "$HOME\.config\python\network\myIP.py"}
 function searchIP {
     param(
         [Parameter(Mandatory = $false)]
         [string]$ipAddress
     )
-    python -u "C:\Users\Khorn Victor\.config\python\network\searchIP.py" $ipAddress
+    python -u "$HOME\.config\python\network\searchIP.py" $ipAddress
     
 }
 function jitter {
@@ -729,7 +747,7 @@ function jitter {
         [string]$hostname
     )
 
-    python -u "C:\Users\Khorn Victor\.config\python\network\jitter.py" $hostname
+    python -u "$HOME\.config\python\network\jitter.py" $hostname
 }
 
 # ----------------------------
@@ -739,12 +757,18 @@ function jitter {
 function direct {
     param([string]$name)
 
-    if ([string]::IsNullOrWhiteSpace($name)) {
-        python "C:\Users\Khorn Victor\.config\python\path\go.py"
+    $goScript = "$HOME\.config\python\path\go.py"
+    if (-not (Test-Path $goScript)) {
+        Write-Host "❌ Script not found: $goScript" -ForegroundColor Yellow
         return
     }
 
-    $path = python "C:\Users\Khorn Victor\.config\python\path\go.py" $name
+    if ([string]::IsNullOrWhiteSpace($name)) {
+        python $goScript
+        return
+    }
+
+    $path = python $goScript $name
     $path = ($path | Select-Object -First 1).Trim()
 
     if ($LASTEXITCODE -eq 0 -and $path -and (Test-Path -LiteralPath $path)) {
@@ -773,8 +797,11 @@ function push_init {
     git push -u origin main
 }
 
-function push_init_rdtc {
+function push_init_org {
     param(
+        [Parameter(Mandatory = $true)]
+        [string]$organization,
+
         [Parameter(Mandatory = $true)]
         [string]$repository
     )
@@ -783,23 +810,43 @@ function push_init_rdtc {
     git add .
     git commit -m "first commit"
     git branch -M main
-    git remote add origin "https://github.com/RDTC-AeroService/$repository.git"
+    git remote add origin "https://github.com/$organization/$repository.git"
     git push -u origin main
 }
 
 function push {
     param(
         [Parameter(Mandatory = $false)]
-        [string]$message
+        [string]$message,
+
+        [switch]$Force
     )
 
-    if ($message -eq "") {
-        $message = "Quick commit!!!"
+    if ([string]::IsNullOrWhiteSpace($message)) {
+        $message = "Quick commit: $(Get-Date -Format 'yyyy-MM-dd HH:mm')"
+    }
+
+    # Check git status first
+    $status = git status --porcelain
+    if (-not $status) {
+        Write-Host "ℹ️ Nothing to commit, working tree clean." -ForegroundColor Yellow
+        return
+    }
+
+    if (-not $Force) {
+        Write-Host "Changes staged/unstaged:" -ForegroundColor Cyan
+        git status --short
+        $confirm = Read-Host "`nProceed with git add ., commit, and push? (y/N)"
+        if ($confirm -notmatch '^(y|yes)$') {
+            Write-Host "❌ Push aborted." -ForegroundColor Red
+            return
+        }
     }
 
     git add .
     git commit -m "$message"
     git push
+    Write-Host "✅ Committed and pushed successfully!" -ForegroundColor Green
 }
 
 # ----------------------------
@@ -807,15 +854,20 @@ function push {
 # ----------------------------
 
 function reactref {
-    Get-Content "D:\Rubber Duck\Remember\React_Functions_Reference.md"
+    $refPath = if ($env:REACT_REF_PATH) { $env:REACT_REF_PATH } else { "$HOME\.config\references\React_Functions_Reference.md" }
+    if (Test-Path $refPath) {
+        Get-Content $refPath
+    } else {
+        Write-Host "Reference file not found at: $refPath" -ForegroundColor Yellow
+    }
 }
 
 function activate_venv {
-    $activateScript = "C:\Users\Khorn Victor\.config\python\.venv\Scripts\Activate.ps1"
+    $activateScript = "$HOME\.config\python\.venv\Scripts\Activate.ps1"
 
     if (Test-Path $activateScript) {
         . $activateScript
-        Write-Host "✓ Activated virtual environment at: ./config/python/.venv" -ForegroundColor Green
+        Write-Host "✓ Activated virtual environment at: $activateScript" -ForegroundColor Green
     } else {
         Write-Error "❌ Activate script not found at: $activateScript"
     }
@@ -852,21 +904,33 @@ function init_php($name) {
 # ----------------------------
 
 function matrix {
-    set-Location "C:\Users\Khorn Victor\.config\Matrix-Rain"
-    Clear-Host
-    cargo run --release -- --mode abc123
+    try {
+        Push-Location "$HOME\.config\Matrix-Rain"
+        Clear-Host
+        cargo run --release -- --mode abc123
+    } finally {
+        Pop-Location
+    }
 }
 
 function fire {
-    set-Location "C:\Users\Khorn Victor\.config\Fire-Shell"
-    Clear-Host
-    cargo run --release
+    try {
+        Push-Location "$HOME\.config\Fire-Shell"
+        Clear-Host
+        cargo run --release
+    } finally {
+        Pop-Location
+    }
 }
 
 function radar {
-    set-Location "C:\Users\Khorn Victor\.config\Radar-Shell"
-    Clear-Host
-    go run main.go
+    try {
+        Push-Location "$HOME\.config\Radar-Shell"
+        Clear-Host
+        go run main.go
+    } finally {
+        Pop-Location
+    }
 }
 
 function randomCode {
@@ -878,19 +942,35 @@ function randomCode {
 # Terminal Customization
 # ----------------------------
 function Change() {
+    $targetPath = if ($env:TERMINAL_OS_CONFIG) { $env:TERMINAL_OS_CONFIG } else { "$HOME\Code\TerminalOsConfiguration" }
+    if (-not (Test-Path $targetPath)) {
+        Write-Host "❌ Directory not found: $targetPath (set `$env:TERMINAL_OS_CONFIG to customize)" -ForegroundColor Yellow
+        return
+    }
     try {
-        Push-Location "C:\Desktop\Student Online (SO)\Code\TerminalOsConfiguration"
+        Push-Location $targetPath
         cargo run
-    } catch { Write-Host "❌ Failed to change terminal configuration. Ensure the path is correct and Cargo is installed." -ForegroundColor Red }
-    finally { Pop-Location }
+    } catch {
+        Write-Host "❌ Failed to change terminal configuration. Ensure Cargo is installed." -ForegroundColor Red
+    } finally {
+        Pop-Location
+    }
 }
 
 function clock() {
-     try {
-        Push-Location "C:\Desktop\Student Online (SO)\Code\TerminalClock"
+    $targetPath = if ($env:TERMINAL_CLOCK_CONFIG) { $env:TERMINAL_CLOCK_CONFIG } else { "$HOME\Code\TerminalClock" }
+    if (-not (Test-Path $targetPath)) {
+        Write-Host "❌ Directory not found: $targetPath (set `$env:TERMINAL_CLOCK_CONFIG to customize)" -ForegroundColor Yellow
+        return
+    }
+    try {
+        Push-Location $targetPath
         cargo run
-    } catch { Write-Host "❌ Failed to change terminal configuration. Ensure the path is correct and Cargo is installed." -ForegroundColor Red }
-    finally { Pop-Location }
+    } catch {
+        Write-Host "❌ Failed to run clock. Ensure Cargo is installed." -ForegroundColor Red
+    } finally {
+        Pop-Location
+    }
 }
 
 function terminal {
