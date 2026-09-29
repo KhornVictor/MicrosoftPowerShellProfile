@@ -235,7 +235,7 @@ function initialize {
     }
 
     # Box Construction Helpers
-    function Make-TopBox ([string]$title, [int]$width = 65) {
+    function MakeTopBox ([string]$title, [int]$width = 65) {
         $prefix = "$topLeft$horiz$horiz "
         $titleLen = $title.Length
         $fillLen = $width - 5 - $titleLen
@@ -244,7 +244,7 @@ function initialize {
         return "$cBoxBorder$prefix$cBoxTitle$title $cBoxBorder$fill$topRight$cReset"
     }
 
-    function Make-BotBox ([int]$width = 65) {
+    function MakeBotBox ([int]$width = 65) {
         $fill = $horiz * ($width - 2)
         return "$cBoxBorder$botLeft$fill$botRight$cReset"
     }
@@ -754,31 +754,6 @@ function jitter {
 # Path
 # ----------------------------
 
-function direct {
-    param([string]$name)
-
-    $goScript = "$HOME\.config\python\path\go.py"
-    if (-not (Test-Path $goScript)) {
-        Write-Host "❌ Script not found: $goScript" -ForegroundColor Yellow
-        return
-    }
-
-    if ([string]::IsNullOrWhiteSpace($name)) {
-        python $goScript
-        return
-    }
-
-    $path = python $goScript $name
-    $path = ($path | Select-Object -First 1).Trim()
-
-    if ($LASTEXITCODE -eq 0 -and $path -and (Test-Path -LiteralPath $path)) {
-        Set-Location -LiteralPath $path
-    }
-    else {
-        Write-Host "❌ Invalid path name"
-    }
-}
-
 # ----------------------------
 # GitHub
 # ----------------------------
@@ -898,6 +873,33 @@ function init_php($name) {
 
     Write-Host "✅ PHP project '$name' created successfully!"
 }
+
+
+function direct {
+    param([string]$name)
+
+    $goScript = "$HOME\.config\python\path\go.py"
+    if (-not (Test-Path $goScript)) {
+        Write-Host "❌ Script not found: $goScript" -ForegroundColor Yellow
+        return
+    }
+
+    if ([string]::IsNullOrWhiteSpace($name)) {
+        python $goScript
+        return
+    }
+
+    $path = python $goScript $name
+    $path = ($path | Select-Object -First 1).Trim()
+
+    if ($LASTEXITCODE -eq 0 -and $path -and (Test-Path -LiteralPath $path)) {
+        Set-Location -LiteralPath $path
+    }
+    else {
+        Write-Host "❌ Invalid path name"
+    }
+}
+
 
 
 # ----------------------------
