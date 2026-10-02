@@ -341,7 +341,7 @@ function initialize {
     $boxWidth = 65
 
     Write-Host ""
-    Write-Host (Make-TopBox "Hardware" $boxWidth)
+    Write-Host (MakeTopBox "Hardware" $boxWidth)
     Write-Host "$cBoxBorder$vert  $cLabel`CPU      $cpuStr"
     Write-Host "$cBoxBorder$vert  $cLabel`GPU      $gpuStr"
     Write-Host "$cBoxBorder$vert  $cLabel`RAM      $cVal$ramUsed GiB $cSub/$cVal $ramTotal GiB"
@@ -350,7 +350,7 @@ function initialize {
     foreach ($dr in $driveList) {
         Write-Host "$cBoxBorder$vert  $cLabel`DRIVE    $cHighlight$($dr.Letter) $cVal$($dr.Used) GiB $cSub/$cVal $($dr.Total) GiB"
     }
-    Write-Host (Make-BotBox $boxWidth)
+    Write-Host (MakeBotBox $boxWidth)
     Write-Host ""
 
 
@@ -494,7 +494,7 @@ function web {
 
 
 function moodle {
-    $url = if ($env:MOODLE_URL) { $env:MOODLE_URL } else { "https://moodle.org" }
+    $url = if ($env:MOODLE_URL) { $env:MOODLE_URL } else { "https://moodle.ccun.edu.kh/course/index.php?categoryid=45" }
     Start-Process $url
 }
 function gitlab {Start-Process "https://gitlab.com"}
@@ -566,22 +566,36 @@ function youtube {
 
 function chrome {
     param(
+        [Alias("g")]
+        [string]$User,
+
         [Alias("u")]
         [string]$URL,
 
-        [Alias("t")]
+        [Alias("s")]
         [string]$Search
     )
-    
+
+    $chromeArgs = @()
+
+    if ($User) { $chromeArgs += "--profile-directory=`"$User`"" }
+
+    # Add URL
     if ($URL) {
-        Start-Process $URL
-    } elseif ($Search) {
-        $encodedSearch = [System.Web.HttpUtility]::UrlEncode($Search)
-        Start-Process "https://www.google.com/search?q=$encodedSearch"
-    } else {
-        Start-Process chrome
+        if ($URL -notmatch '^https?://') { $URL = "https://$URL" }
+        $chromeArgs += $URL
     }
+
+    if ($Search) {
+        $encodedSearch = [System.Web.HttpUtility]::UrlEncode($Search)
+        $searchURL = "https://www.google.com/search?q=$encodedSearch"
+
+        $chromeArgs += $searchURL
+    }
+    if ($chromeArgs.Count -eq 0) { Start-Process "chrome.exe" }
+    else { Start-Process "chrome.exe" -ArgumentList $chromeArgs }
 }
+
 
 # ----------------------------
 # Open PDF
@@ -875,31 +889,10 @@ function init_php($name) {
 }
 
 
-function direct {
-    param([string]$name)
-
-    $goScript = "$HOME\.config\python\path\go.py"
-    if (-not (Test-Path $goScript)) {
-        Write-Host "❌ Script not found: $goScript" -ForegroundColor Yellow
-        return
-    }
-
-    if ([string]::IsNullOrWhiteSpace($name)) {
-        python $goScript
-        return
-    }
-
-    $path = python $goScript $name
-    $path = ($path | Select-Object -First 1).Trim()
-
-    if ($LASTEXITCODE -eq 0 -and $path -and (Test-Path -LiteralPath $path)) {
-        Set-Location -LiteralPath $path
-    }
-    else {
-        Write-Host "❌ Invalid path name"
-    }
+# --- Direct: Directory Navigation & Bookmark Manager ---
+if (Test-Path "C:\Tool\Direct\profile.ps1") {
+    . "C:\Tool\Direct\profile.ps1"
 }
-
 
 
 # ----------------------------
@@ -983,6 +976,10 @@ function terminal {
     else {
         wt.exe -d "$($args[0])"
     }
+}
+
+function mkfolders {
+    & "C:\Tool\FolderCreator\target\release\FolderCreator.exe" @args
 }
 
 function env(){ Start-Process "SystemPropertiesAdvanced.exe"}
